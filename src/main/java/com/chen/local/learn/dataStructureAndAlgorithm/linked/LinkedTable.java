@@ -242,7 +242,7 @@ public class LinkedTable<T> implements Linked<T> {
         System.out.println(linked.add("aaa"));
         System.out.println(linked.add("bbb"));
         System.out.println(linked.add("ccc"));
-//        linked.checkCycle();
+        linked.checkCycle();
 
         LinkedTable<String> linked2 = new LinkedTable<>();
         System.out.println(linked2.add("ddd"));
