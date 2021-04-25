@@ -1,5 +1,7 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.linked;
 
+import com.chen.local.learn.dataStructureAndAlgorithm.ILinked;
+
 /**
  * 链表
  * <p>〈功能详细描述〉</p>
@@ -8,7 +10,7 @@ package com.chen.local.learn.dataStructureAndAlgorithm.linked;
  * @version 1.0
  * @date 2021/4/22
  */
-public class LinkedTable<T> implements Linked<T> {
+public class LinkedTable<T> implements ILinked<T> {
 
     private LinkedTable<T> prev;
     private LinkedTable<T> next;
@@ -22,7 +24,7 @@ public class LinkedTable<T> implements Linked<T> {
         this.isSentinel = true;
     }
 
-    private LinkedTable(T element, Linked<T> sentinel, Linked<T> prev, Linked<T> next) {
+    private LinkedTable(T element, ILinked<T> sentinel, ILinked<T> prev, ILinked<T> next) {
         this.element = element;
         this.isSentinel = false;
         this.sentinel = (LinkedTable<T>) sentinel;
@@ -31,7 +33,7 @@ public class LinkedTable<T> implements Linked<T> {
     }
 
     @Override
-    public Linked<T> add(T e) {
+    public ILinked<T> add(T e) {
         if (isSentinel) {
             LinkedTable<T> oriNext = next;
             next = new LinkedTable<>(e, this, this, oriNext);
@@ -101,7 +103,7 @@ public class LinkedTable<T> implements Linked<T> {
     }
 
     @Override
-    public Linked<T> reverse() {
+    public ILinked<T> reverse() {
         if (isSentinel) {
             next.reverseNode(null);
             return this;
@@ -145,7 +147,7 @@ public class LinkedTable<T> implements Linked<T> {
     }
 
     @Override
-    public Linked<T> merge(Linked<T> merged) {
+    public ILinked<T> merge(ILinked<T> merged) {
         if (isSentinel) {
             LinkedTable<T> mergedFirst = (LinkedTable<T>) merged.getFirst();
             LinkedTable<T> mergedLast = (LinkedTable<T>) merged.getLast();
@@ -183,7 +185,7 @@ public class LinkedTable<T> implements Linked<T> {
     }
 
     @Override
-    public Linked<T> getPrev() {
+    public ILinked<T> getPrev() {
         if (isSentinel) {
             return next;
         }
@@ -191,12 +193,12 @@ public class LinkedTable<T> implements Linked<T> {
     }
 
     @Override
-    public Linked<T> getNext() {
+    public ILinked<T> getNext() {
         return next;
     }
 
     @Override
-    public Linked<T> getFirst() {
+    public ILinked<T> getFirst() {
         if (isSentinel) {
             return next;
         }
@@ -204,12 +206,12 @@ public class LinkedTable<T> implements Linked<T> {
     }
 
     @Override
-    public Linked<T> getMid() {
+    public ILinked<T> getMid() {
         return null;
     }
 
     @Override
-    public Linked<T> getLast() {
+    public ILinked<T> getLast() {
         if (next == null) {
             return this;
         }

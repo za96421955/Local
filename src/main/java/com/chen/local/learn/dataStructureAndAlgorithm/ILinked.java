@@ -1,6 +1,4 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.linked;
-
-import com.chen.local.learn.dataStructureAndAlgorithm.Structure;
+package com.chen.local.learn.dataStructureAndAlgorithm;
 
 /**
  * 链表
@@ -10,7 +8,7 @@ import com.chen.local.learn.dataStructureAndAlgorithm.Structure;
  * @version 1.0
  * @date 2021/4/22
  */
-public interface Linked<T> extends Structure<T> {
+public interface ILinked<T> extends Structure<T> {
 
     /**
      * @description 反转
@@ -19,7 +17,7 @@ public interface Linked<T> extends Structure<T> {
      * @author 陈晨
      * @date 2021/4/22 17:40
      **/
-    Linked<T> reverse();
+    ILinked<T> reverse();
 
     /**
      * @description 环检测
@@ -38,7 +36,7 @@ public interface Linked<T> extends Structure<T> {
      * @date 2021/4/22 17:41
      * @param merged
      **/
-    Linked<T> merge(Linked<T> merged);
+    ILinked<T> merge(ILinked<T> merged);
 
     /**
      * @description 冷数据移除
@@ -56,7 +54,7 @@ public interface Linked<T> extends Structure<T> {
      * @author 陈晨
      * @date 2021/4/22 18:01
      **/
-    Linked<T> getPrev();
+    ILinked<T> getPrev();
 
     /**
      * @description 获取后节点
@@ -65,7 +63,7 @@ public interface Linked<T> extends Structure<T> {
      * @author 陈晨
      * @date 2021/4/22 18:01
      **/
-    Linked<T> getNext();
+    ILinked<T> getNext();
 
     /**
      * @description 获取首节点
@@ -74,7 +72,7 @@ public interface Linked<T> extends Structure<T> {
      * @author 陈晨
      * @date 2021/4/22 17:42
      **/
-    Linked<T> getFirst();
+    ILinked<T> getFirst();
 
     /**
      * @description 获取中间节点
@@ -83,7 +81,7 @@ public interface Linked<T> extends Structure<T> {
      * @author 陈晨
      * @date 2021/4/22 17:42
      **/
-    Linked<T> getMid();
+    ILinked<T> getMid();
 
     /**
      * @description 获取尾节点
@@ -92,7 +90,7 @@ public interface Linked<T> extends Structure<T> {
      * @author 陈晨
      * @date 2021/4/22 17:42
      **/
-    Linked<T> getLast();
+    ILinked<T> getLast();
 
 }
 
