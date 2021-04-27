@@ -46,6 +46,11 @@ public class Stack<T> implements IStack<T> {
         size = 0;
     }
 
+    @Override
+    public String toString() {
+        return array.toString();
+    }
+
     public static void main(String[] args) {
         Stack<Integer> stack = new Stack<>();
         stack.push(1);

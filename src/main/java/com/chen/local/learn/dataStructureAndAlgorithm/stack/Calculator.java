@@ -1,5 +1,7 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.stack;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,31 +52,60 @@ public class Calculator {
         if (DIVIDE.equals(symbol)) {
             return v1 / v2;
         }
-        throw new RuntimeException("symbol not exists");
+        throw new RuntimeException(String.format("symbol[%s] not exists", symbol));
     }
 
     public double calcu(String content) {
         String[] contents = content.split(" ");
-        Arrays.stream(contents).forEach(s -> {
-            if (!isSymbol(s)) {
-                Double v1 = resultStack.pop();
-                if (v1 == null) {
-                    resultStack.push(Double.parseDouble(s));
-                    return;
-                }
-                double v2 = Double.parseDouble(s);
-                String symbol = symbolStack.pop();
-                resultStack.push(this.calcu(v1, v2, symbol));
+        System.out.println("contents: " + contents.length);
+        Arrays.stream(contents).forEach(curr -> {
+            // 若当前内容非运算符, 则直接入栈
+            if (!this.isSymbol(curr)) {
+                resultStack.push(Double.parseDouble(curr));
                 return;
             }
-            symbolStack.push(s);
+
+            String lastSymbol = symbolStack.pop();
+            // 若站内没有运算符, 则直接入栈
+            if (StringUtils.isBlank(lastSymbol)) {
+                symbolStack.push(curr);
+                return;
+            }
+            // 比较last与当前运算符
+            // 若 last >= curr, 则运算 last
+            // 否则重新入栈
+            if (SYMBOLS.get(lastSymbol) >= SYMBOLS.get(curr)) {
+                double v2 = resultStack.pop();
+                double v1 = resultStack.pop();
+                double result = this.calcu(v1, v2, lastSymbol);
+                resultStack.push(result);
+                System.out.println(v1 + " " + lastSymbol + " " + v2 + " = " + result);
+            } else {
+                symbolStack.push(lastSymbol);
+            }
+            symbolStack.push(curr);
         });
+        System.out.println("result: " + resultStack.toString());
+        System.out.println("symbol: " + symbolStack.toString());
+        // 入栈完成, 计算结果
+        String symbol;
+        while ((symbol = symbolStack.pop()) != null) {
+            Double v2 = resultStack.pop();
+            Double v1 = resultStack.pop();
+            // 栈检查
+            if (v1 == null || v2 == null) {
+                throw new RuntimeException(String.format("content[%s] style exception", content));
+            }
+            double result = this.calcu(v1, v2, symbol);
+            resultStack.push(result);
+            System.out.println(v1 + " " + symbol + " " + v2 + " = " + result);
+        }
         return resultStack.pop();
     }
 
     public static void main(String[] args) {
         Calculator calculator = new Calculator();
-        double result = calculator.calcu("1 + 1 * 2");
+        double result = calculator.calcu("5 + 3 * 2 - 4 / 6");
         System.out.println(result);
     }
 
