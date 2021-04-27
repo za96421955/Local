@@ -1,11 +1,9 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.array;
 
-import com.chen.local.learn.dataStructureAndAlgorithm.Structure;
-
 import java.util.Arrays;
 
 /**
- * 数组
+ * 逐步复制动态数组
  * <p>〈功能详细描述〉</p>
  *
  * @author 陈晨
@@ -45,14 +43,13 @@ public class StepArray<T> extends Array<T> {
     }
 
     @Override
-    public Structure<T> add(T e) {
+    public void add(T e) {
         if (expandArray != null) {
             expandArray[cursor++] = e;
             this.copy();
-            return this;
+            return;
         }
         super.add(e);
-        return this;
     }
 
     @Override
@@ -82,12 +79,11 @@ public class StepArray<T> extends Array<T> {
 
     @Override
     protected void compress(int index) {
+        if (cursor - index < 0) {
+            return;
+        }
         if (expandArray != null) {
-            for (int i = index; i < expandArray.length - 1; i++) {
-                Object temp = expandArray[i];
-                expandArray[i] = expandArray[i + 1];
-                expandArray[i + 1] = temp;
-            }
+            System.arraycopy(expandArray, index + 1, expandArray, index, cursor - index);
         }
         if (index < array.length) {
             super.compress(index);
@@ -101,18 +97,27 @@ public class StepArray<T> extends Array<T> {
 
     public static void main(String[] args) {
         StepArray<Integer> array = new StepArray<>();
-        System.out.println(array.add(1));
-        System.out.println(array.add(2));
-        System.out.println(array.add(3));
-        System.out.println(array.add(4));
-        System.out.println(array.add(5));
-        System.out.println(array.add(6));
-        System.out.println(array.add(7));
+        array.add(1);
+        System.out.println(array);
+        array.add(2);
+        System.out.println(array);
+        array.add(3);
+        System.out.println(array);
+        array.add(4);
+        System.out.println(array);
+        array.add(5);
+        System.out.println(array);
+        array.add(6);
+        System.out.println(array);
+        array.add(7);
+        System.out.println(array);
         System.out.println(array.get(2) + " : " + array);
         System.out.println(array.remove(2) + " : " + array);
 
-        System.out.println(array.add(8));
-        System.out.println(array.add(9));
+        array.add(8);
+        System.out.println(array);
+        array.add(9);
+        System.out.println(array);
         System.out.println(array.get(6) + " : " + array);
         System.out.println(array.get(6) + " : " + array);
         System.out.println(array.get(6) + " : " + array);

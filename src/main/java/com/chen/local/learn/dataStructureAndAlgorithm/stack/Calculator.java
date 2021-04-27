@@ -71,6 +71,7 @@ public class Calculator {
                 symbolStack.push(curr);
                 return;
             }
+
             // 比较last与当前运算符
             // 若 last >= curr, 则运算 last
             // 否则重新入栈

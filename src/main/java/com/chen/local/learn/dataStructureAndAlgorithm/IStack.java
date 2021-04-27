@@ -28,22 +28,8 @@ public interface IStack<T> {
      **/
     T pop();
 
-    /**
-     * @description 深度
-     * <p>〈功能详细描述〉</p>
-     *
-     * @author 陈晨
-     * @date 2021/4/25 15:02
-     **/
     int size();
 
-    /**
-     * @description 清除
-     * <p>〈功能详细描述〉</p>
-     *
-     * @author 陈晨
-     * @date 2021/4/25 16:32
-     **/
     void clear();
 
 }
