@@ -55,7 +55,16 @@ public class Calculator {
         throw new RuntimeException(String.format("symbol[%s] not exists", symbol));
     }
 
-    public double calcu(String content) {
+    public double calcu(String symbol) {
+        double v2 = resultStack.pop();
+        double v1 = resultStack.pop();
+        double result = this.calcu(v1, v2, symbol);
+        resultStack.push(result);
+        System.out.println(v1 + " " + symbol + " " + v2 + " = " + result);
+        return result;
+    }
+
+    public double print(String content) {
         String[] contents = content.split(" ");
         System.out.println("contents: " + contents.length);
         Arrays.stream(contents).forEach(curr -> {
@@ -76,11 +85,7 @@ public class Calculator {
             // 若 last >= curr, 则运算 last
             // 否则重新入栈
             if (SYMBOLS.get(lastSymbol) >= SYMBOLS.get(curr)) {
-                double v2 = resultStack.pop();
-                double v1 = resultStack.pop();
-                double result = this.calcu(v1, v2, lastSymbol);
-                resultStack.push(result);
-                System.out.println(v1 + " " + lastSymbol + " " + v2 + " = " + result);
+                this.calcu(lastSymbol);
             } else {
                 symbolStack.push(lastSymbol);
             }
@@ -91,22 +96,23 @@ public class Calculator {
         // 入栈完成, 计算结果
         String symbol;
         while ((symbol = symbolStack.pop()) != null) {
-            Double v2 = resultStack.pop();
-            Double v1 = resultStack.pop();
-            // 栈检查
-            if (v1 == null || v2 == null) {
-                throw new RuntimeException(String.format("content[%s] style exception", content));
+            double result = this.calcu(symbol);
+            if (result >= 0 || symbolStack.size() <= 0) {
+                continue;
             }
-            double result = this.calcu(v1, v2, symbol);
-            resultStack.push(result);
-            System.out.println(v1 + " " + symbol + " " + v2 + " = " + result);
+            // 负数 & 下一个计算=减, 改变运算符
+            String nextSymbol = symbolStack.pop();
+            if (SUBTRACT.equals(nextSymbol)) {
+                nextSymbol = ADD;
+            }
+            symbolStack.push(nextSymbol);
         }
         return resultStack.pop();
     }
 
     public static void main(String[] args) {
         Calculator calculator = new Calculator();
-        double result = calculator.calcu("5 + 3 * 2 - 4 / 6");
+        double result = calculator.print("5 + 3 * 2 - 4 / 2 - 10 - 3 * 5");
         System.out.println(result);
     }
 
