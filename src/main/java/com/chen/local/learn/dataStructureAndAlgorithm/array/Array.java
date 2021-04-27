@@ -93,6 +93,7 @@ public class Array<T> implements IArray<T> {
             return;
         }
         System.arraycopy(array, index + 1, array, index, cursor - index);
+        array[cursor] = null;
     }
 
     @Override

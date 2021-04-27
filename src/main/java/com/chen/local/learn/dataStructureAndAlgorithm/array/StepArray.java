@@ -84,6 +84,7 @@ public class StepArray<T> extends Array<T> {
         }
         if (expandArray != null) {
             System.arraycopy(expandArray, index + 1, expandArray, index, cursor - index);
+            expandArray[cursor] = null;
         }
         if (index < array.length) {
             super.compress(index);

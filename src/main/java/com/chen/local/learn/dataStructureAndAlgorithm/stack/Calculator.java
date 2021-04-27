@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @description 计算器
+ * @description 计算器（无括号）
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
