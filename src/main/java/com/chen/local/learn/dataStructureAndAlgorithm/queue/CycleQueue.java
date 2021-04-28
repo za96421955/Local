@@ -34,17 +34,13 @@ public class CycleQueue<T> implements IQueue<T> {
     }
 
     private int nextLocation(int curr) {
-        if (curr >= length - 1) {
-            return 0;
-        }
-        return curr + 1;
+        return ++curr >= length ? 0 : curr;
     }
 
     @Override
     public boolean enqueue(T t) {
-        if (this.nextLocation(tail) == head) {
-            System.out.println("queue is full");
-            return false;
+        if ((tail + 1) % length == head) {
+            throw new RuntimeException("queue is full");
         }
         array[tail] = t;
         tail = this.nextLocation(tail);
@@ -54,20 +50,17 @@ public class CycleQueue<T> implements IQueue<T> {
     @Override
     public T dequeue() {
         if (head == tail) {
-            System.out.println("queue is empty");
-            return null;
+            throw new RuntimeException("queue is empty");
         }
         T element = (T) array[head];
+        array[head] = null;
         head = this.nextLocation(head);
         return element;
     }
 
     @Override
     public int size() {
-        if (head == tail) {
-            return 0;
-        }
-        if (tail > head) {
+        if (tail >= head) {
             return tail - head;
         }
         return length - head + tail;
@@ -90,47 +83,64 @@ public class CycleQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
-        IQueue<String> queue = new CycleQueue<>();
-        queue.enqueue("aaa");
-        System.out.println(queue);
-        queue.enqueue("bbb");
-        System.out.println(queue);
-        queue.enqueue("ccc");
-        System.out.println(queue);
-        queue.enqueue("ddd");
-        System.out.println(queue);
-        queue.enqueue("eee");
-        System.out.println(queue);
-        System.out.println(queue.size());
+//        IQueue<String> queue = new CycleQueue<>();
+//        queue.enqueue("aaa");
+//        System.out.println(queue);
+//        queue.enqueue("bbb");
+//        System.out.println(queue);
+//        queue.enqueue("ccc");
+//        System.out.println(queue);
+//        queue.enqueue("ddd");
+//        System.out.println(queue);
+//        System.out.println(queue.size());
+//
+//        System.out.println("\n=========================================");
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.size());
+//
+//        System.out.println("\n=========================================");
+//        queue.enqueue("a1a1");
+//        System.out.println(queue);
+//        queue.enqueue("b1b1");
+//        System.out.println(queue);
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.size());
+//        queue.enqueue("a2a2");
+//        System.out.println(queue);
+//        queue.enqueue("b2b2");
+//        System.out.println(queue);
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.size());
+//        queue.enqueue("a3a3");
+//        System.out.println(queue);
+//        queue.enqueue("b3b3");
+//        System.out.println(queue);
+//        System.out.println(queue.dequeue() + " : " + queue);
+//        System.out.println(queue.size());
+//
+//        queue.clear();
+//        System.out.println(queue);
+//        System.out.println(queue.size());
 
-        System.out.println("\n=========================================");
-        System.out.println(queue.dequeue() + " : " + queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-        System.out.println(queue.size());
 
-        System.out.println("\n=========================================");
-        queue.enqueue("a1a1");
-        System.out.println(queue);
-        queue.enqueue("b1b1");
-        System.out.println(queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-        queue.enqueue("a2a2");
-        System.out.println(queue);
-        queue.enqueue("b2b2");
-        System.out.println(queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-        queue.enqueue("a3a3");
-        System.out.println(queue);
-        queue.enqueue("b3b3");
-        System.out.println(queue);
-        System.out.println(queue.dequeue() + " : " + queue);
-
-        System.out.println(queue.size());
-        queue.clear();
-        System.out.println(queue);
+        IQueue<String> queue = new CasQueue<>(100);
+        // input
+        for (int j = 0; j < 10; j++) {
+            new Thread(() -> {
+                try {
+                    for (int i = 1; i <= 100; i++) {
+                        queue.enqueue(i + "");
+                        System.out.println("EN <<<===️: " + i + ", " + queue.size());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println(queue.size());
+            }).start();
+        }
     }
 
 }

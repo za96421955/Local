@@ -29,7 +29,7 @@ public class BlockQueue<T> implements IQueue<T> {
 
     private void init(int length) {
         this.length = length;
-        this.queue = new CycleQueue<>(length);
+        this.queue = new CasQueue<>(length);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class BlockQueue<T> implements IQueue<T> {
                 }
             }
         }
-        boolean result = queue.enqueue(t);
+        queue.enqueue(t);
         synchronized (dequeueLock) {
             dequeueLock.notify();
         }
-        return result;
+        return true;
     }
 
     @Override
@@ -88,27 +88,62 @@ public class BlockQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
+        int size = 1000;
+        int threads = 2;
+        final int step = size / threads;
+
         IQueue<String> queue = new BlockQueue<>(4);
-        new Thread(() -> {
-            try {
-                for (int i = 1; i <= 100; i++) {
-                    boolean result = queue.enqueue(i + "");
-                    if (result) {
-                        System.out.println("EN <<<===️: " + i);
+
+        // input
+        for (int j = 0; j < threads; j++) {
+            final int j100 = j * step;
+            new Thread(() -> {
+                try {
+                    for (int i = j100 + 1; i <= j100 + step; i++) {
+                        try {
+                            queue.enqueue(i + "");
+                            System.out.println("EN <<<===️: " + i);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            i--;
+                        }
+//                    Thread.sleep((long) (Math.random() * 50));
                     }
-                    Thread.sleep((long) (Math.random() * 50));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+            }).start();
+        }
+
+        // out
+//        for (int j = 0; j < threads; j++) {
+//            new Thread(() -> {
+//                try {
+//                    for (int i = 0; i < step; i++) {
+//                        try {
+//                            String e = queue.dequeue();
+//                            System.out.println("DE ===>>>: " + e);
+//                        } catch (Exception e) {
+//                            i--;
+//                        }
+////                    Thread.sleep((long) (Math.random() * 20));
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }).start();
+//        }
 
         new Thread(() -> {
             try {
-                for (int i = 1; i <= 100; i++) {
-                    String e = queue.dequeue();
-                    System.out.println("DE ===>>>: " + e);
-                    Thread.sleep((long) (Math.random() * 20));
+                for (int i = 0; i < size; i++) {
+                    try {
+                        String e = queue.dequeue();
+                        System.out.println("DE ===>>>: " + e);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        i--;
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
