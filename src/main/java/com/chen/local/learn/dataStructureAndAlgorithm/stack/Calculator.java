@@ -1,5 +1,6 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.stack;
 
+import com.chen.local.learn.dataStructureAndAlgorithm.IStack;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -20,8 +21,8 @@ public class Calculator {
     private static final String MULTIPLE = "*";
     private static final String DIVIDE = "/";
 
-    private final Stack<Double> resultStack;
-    private final Stack<String> symbolStack;
+    private final IStack<Double> resultStack;
+    private final IStack<String> symbolStack;
 
     static {
         SYMBOLS.put(ADD, 0);
@@ -31,8 +32,8 @@ public class Calculator {
     }
 
     public Calculator() {
-        this.resultStack = new Stack<>();
-        this.symbolStack = new Stack<>();
+        this.resultStack = new LinkedStack<>();
+        this.symbolStack = new LinkedStack<>();
     }
 
     private boolean isSymbol(String symbol) {

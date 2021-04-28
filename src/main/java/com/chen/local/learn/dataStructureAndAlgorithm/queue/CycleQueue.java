@@ -45,13 +45,14 @@ public class CycleQueue<T> implements IQueue<T> {
 
     @Override
     public int size() {
-        return 0;
+        return length;
     }
 
     @Override
     public void clear() {
 
     }
+
     @Override
     public String toString() {
         return super.toString();

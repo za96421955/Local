@@ -12,13 +12,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class History {
 
-    private final Stack<String> backStack;
-    private final Stack<String> advanceStack;
+    private final ArrayStack<String> backStack;
+    private final ArrayStack<String> advanceStack;
     private String curr;
 
     public History() {
-        backStack = new Stack<>();
-        advanceStack = new Stack<>();
+        backStack = new ArrayStack<>();
+        advanceStack = new ArrayStack<>();
     }
 
     public void go(String url) {
@@ -47,31 +47,35 @@ public class History {
         return curr;
     }
 
+    public String curr() {
+        return curr;
+    }
+
     public static void main(String[] args) {
         History history = new History();
-        history.go("http://url1111111111111111");
-        history.go("http://url2222222222222222");
-        history.go("http://url3333333333333333");
-        System.out.println(history.back());
-        System.out.println(history.back());
-        System.out.println(history.back());
-        System.out.println(history.advance());
-        System.out.println(history.advance());
-        System.out.println(history.advance());
-        System.out.println(history.back());
-        System.out.println(history.back());
-        System.out.println(history.back());
+        history.go("http://url111");
+        history.go("http://url222");
+        history.go("http://url333");
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.advance() + " : " + history.curr());
+        System.out.println(history.advance() + " : " + history.curr());
+        System.out.println(history.advance() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
 
         System.out.println("==============================================================");
-        history.go("http://url4444444444444444");
-        history.go("http://url5555555555555555");
-        System.out.println(history.advance());
-        System.out.println(history.back());
-        System.out.println(history.back());
-        System.out.println(history.back());
-        System.out.println(history.advance());
-        System.out.println(history.advance());
-        System.out.println(history.advance());
+        history.go("http://url444");
+        history.go("http://url555");
+        System.out.println(history.advance() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.back() + " : " + history.curr());
+        System.out.println(history.advance() + " : " + history.curr());
+        System.out.println(history.advance() + " : " + history.curr());
+        System.out.println(history.advance() + " : " + history.curr());
     }
 
 }
