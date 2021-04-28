@@ -1,7 +1,6 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.stack;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.IStack;
-import com.chen.local.learn.dataStructureAndAlgorithm.array.Array;
 
 /**
  * 顺序栈（数组，有限，需动态扩容）

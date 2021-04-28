@@ -1,5 +1,6 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.stack;
+package com.chen.local.learn.dataStructureAndAlgorithm.stack.app;
 
+import com.chen.local.learn.dataStructureAndAlgorithm.stack.ArrayStack;
 import org.apache.commons.lang3.StringUtils;
 
 /**

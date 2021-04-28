@@ -1,6 +1,7 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.stack;
+package com.chen.local.learn.dataStructureAndAlgorithm.stack.app;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.IStack;
+import com.chen.local.learn.dataStructureAndAlgorithm.stack.LinkedStack;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
