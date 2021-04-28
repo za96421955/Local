@@ -17,7 +17,7 @@ public interface IQueue<T> {
      * @author 陈晨
      * @date 2021/4/27 15:35
      */
-    boolean enqueue(T t) throws InterruptedException;
+    boolean enqueue(T t);
 
     /**
      * @description 出队
@@ -26,7 +26,7 @@ public interface IQueue<T> {
      * @author 陈晨
      * @date 2021/4/27 15:35
      */
-    T dequeue() throws InterruptedException;
+    T dequeue();
 
     int size();
 

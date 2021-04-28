@@ -112,7 +112,7 @@ public class Array<T> implements IArray<T> {
     }
 
     public static void main(String[] args) {
-        Array<Integer> array = new Array<>(8);
+        IArray<Integer> array = new Array<>(8);
         array.add(1);
         System.out.println(array);
         array.add(2);

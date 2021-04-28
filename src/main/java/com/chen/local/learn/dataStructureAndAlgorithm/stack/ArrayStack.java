@@ -65,7 +65,7 @@ public class ArrayStack<T> implements IStack<T> {
     }
 
     public static void main(String[] args) {
-        ArrayStack<Integer> stack = new ArrayStack<>();
+        IStack<Integer> stack = new ArrayStack<>();
         stack.push(1);
         stack.push(2);
         stack.push(3);

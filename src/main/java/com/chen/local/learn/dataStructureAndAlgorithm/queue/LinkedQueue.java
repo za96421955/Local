@@ -78,7 +78,7 @@ public class LinkedQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
-        LinkedQueue<String> queue = new LinkedQueue<>();
+        IQueue<String> queue = new LinkedQueue<>();
         queue.enqueue("aaa");
         System.out.println(queue);
         queue.enqueue("bbb");

@@ -1,5 +1,6 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.stack.app;
 
+import com.chen.local.learn.dataStructureAndAlgorithm.IStack;
 import com.chen.local.learn.dataStructureAndAlgorithm.stack.ArrayStack;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class History {
 
-    private final ArrayStack<String> backStack;
-    private final ArrayStack<String> advanceStack;
+    private final IStack<String> backStack;
+    private final IStack<String> advanceStack;
     private String curr;
 
     public History() {

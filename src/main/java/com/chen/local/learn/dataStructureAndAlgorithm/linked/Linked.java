@@ -3,7 +3,7 @@ package com.chen.local.learn.dataStructureAndAlgorithm.linked;
 import com.chen.local.learn.dataStructureAndAlgorithm.ILinked;
 
 /**
- * 链表
+ * 双向链表
  * <p>〈功能详细描述〉</p>
  *
  * @author 陈晨
@@ -205,7 +205,7 @@ public class Linked<T> implements ILinked<T> {
     }
 
     public static void main(String[] args) {
-        Linked<String> linked = new Linked<>();
+        ILinked<String> linked = new Linked<>();
         System.out.println(linked.get(0));
         linked.add("aaa");
         System.out.println(linked);

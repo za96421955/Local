@@ -88,7 +88,7 @@ public class ArrayQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
-        ArrayQueue<String> queue = new ArrayQueue<>();
+        IQueue<String> queue = new ArrayQueue<>();
         queue.enqueue("aaa");
         System.out.println(queue);
         queue.enqueue("bbb");

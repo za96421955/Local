@@ -33,11 +33,15 @@ public class BlockQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public boolean enqueue(T t) throws InterruptedException {
+    public boolean enqueue(T t) {
         synchronized (enqueueLock) {
             if (queue.size() >= length) {
                 System.out.println("enqueue wait <<<===️");
-                enqueueLock.wait();
+                try {
+                    enqueueLock.wait();
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         }
         boolean result = queue.enqueue(t);
@@ -48,11 +52,15 @@ public class BlockQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public T dequeue() throws InterruptedException {
+    public T dequeue() {
         synchronized (dequeueLock) {
             if (queue.size() <= 0) {
                 System.out.println("dequeue wait ===>>>");
-                dequeueLock.wait();
+                try {
+                    dequeueLock.wait();
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         }
         T element = queue.dequeue();

@@ -90,7 +90,7 @@ public class CycleQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
-        CycleQueue<String> queue = new CycleQueue<>();
+        IQueue<String> queue = new CycleQueue<>();
         queue.enqueue("aaa");
         System.out.println(queue);
         queue.enqueue("bbb");

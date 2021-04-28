@@ -1,5 +1,7 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.array;
 
+import com.chen.local.learn.dataStructureAndAlgorithm.IArray;
+
 import java.util.Arrays;
 
 /**
@@ -97,7 +99,7 @@ public class StepArray<T> extends Array<T> {
     }
 
     public static void main(String[] args) {
-        StepArray<Integer> array = new StepArray<>();
+        IArray<Integer> array = new StepArray<>();
         array.add(1);
         System.out.println(array);
         array.add(2);
