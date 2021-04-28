@@ -17,7 +17,7 @@ public interface IStack<T> {
      * @author 陈晨
      * @date 2021/4/25 15:02
      **/
-    void push(T e);
+    boolean push(T e);
 
     /**
      * @description 弹出

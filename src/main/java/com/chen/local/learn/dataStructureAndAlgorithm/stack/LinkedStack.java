@@ -13,7 +13,6 @@ import com.chen.local.learn.dataStructureAndAlgorithm.IStack;
 public class LinkedStack<T> implements IStack<T> {
 
     private LinkedStack<T> top;
-    private LinkedStack<T> low;
 
     private LinkedStack<T> prev;
     private T element;
@@ -27,24 +26,20 @@ public class LinkedStack<T> implements IStack<T> {
     }
 
     @Override
-    public void push(T e) {
-        if (top == null) {
-            top = new LinkedStack<>(e, null);
-            low = top;
-        } else {
-            low = new LinkedStack<>(e, low);
-        }
+    public boolean push(T e) {
+        top = new LinkedStack<>(e, top);
         size++;
+        return true;
     }
 
     @Override
     public T pop() {
-        if (low == null) {
+        if (top == null) {
             return null;
         }
-        LinkedStack<T> removed = low;
+        LinkedStack<T> removed = top;
         T element = removed.element;
-        low = removed.prev;
+        top = removed.prev;
         removed.prev = null;
         removed.element = null;
         size--;
@@ -59,14 +54,13 @@ public class LinkedStack<T> implements IStack<T> {
     @Override
     public void clear() {
         top = null;
-        low = null;
         size = 0;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        LinkedStack<T> curr = low;
+        LinkedStack<T> curr = top;
         while (curr != null) {
             sb.insert(0, "," + curr.element);
             curr = curr.prev;

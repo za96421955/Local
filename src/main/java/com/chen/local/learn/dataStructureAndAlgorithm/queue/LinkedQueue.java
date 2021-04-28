@@ -27,7 +27,7 @@ public class LinkedQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public void enqueue(T t) {
+    public boolean enqueue(T t) {
         if (head == null) {
             head = new LinkedQueue<>(t, null);
             tail = head;
@@ -36,6 +36,7 @@ public class LinkedQueue<T> implements IQueue<T> {
             tail = tail.next;
         }
         length++;
+        return true;
     }
 
     @Override

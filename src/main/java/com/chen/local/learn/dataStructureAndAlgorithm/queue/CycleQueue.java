@@ -11,7 +11,7 @@ import com.chen.local.learn.dataStructureAndAlgorithm.IQueue;
  * @date 2021/4/27
  */
 public class CycleQueue<T> implements IQueue<T> {
-    protected static int DEFAULT_LENGTH = 4;
+    private static int DEFAULT_LENGTH = 4;
 
     private int length;
     private Object[] array;
@@ -19,11 +19,11 @@ public class CycleQueue<T> implements IQueue<T> {
     private int tail;
 
     public CycleQueue() {
-        this.init(DEFAULT_LENGTH);
+        this.init(DEFAULT_LENGTH + 1);
     }
 
     public CycleQueue(int length) {
-        this.init(length);
+        this.init(length + 1);
     }
 
     private void init(int length) {
@@ -41,13 +41,14 @@ public class CycleQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public void enqueue(T t) {
+    public boolean enqueue(T t) {
         if (this.nextLocation(tail) == head) {
             System.out.println("queue is full");
-            return;
+            return false;
         }
         array[tail] = t;
         tail = this.nextLocation(tail);
+        return true;
     }
 
     @Override

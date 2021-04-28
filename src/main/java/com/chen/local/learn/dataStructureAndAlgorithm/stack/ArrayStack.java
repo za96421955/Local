@@ -11,7 +11,7 @@ import com.chen.local.learn.dataStructureAndAlgorithm.IStack;
  * @date 2021/4/25
  */
 public class ArrayStack<T> implements IStack<T> {
-    protected static int DEFAULT_LENGTH = 4;
+    private static int DEFAULT_LENGTH = 4;
 
     private int length;
     private Object[] array;
@@ -28,12 +28,13 @@ public class ArrayStack<T> implements IStack<T> {
     }
 
     @Override
-    public void push(T e) {
+    public boolean push(T e) {
         if (size >= length) {
             System.out.println("stack is pull");
-            return;
+            return false;
         }
         array[size++] = e;
+        return true;
     }
 
     @Override

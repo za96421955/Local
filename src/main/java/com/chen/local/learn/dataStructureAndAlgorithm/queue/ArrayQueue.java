@@ -11,7 +11,7 @@ import com.chen.local.learn.dataStructureAndAlgorithm.IQueue;
  * @date 2021/4/27
  */
 public class ArrayQueue<T> implements IQueue<T> {
-    protected static int DEFAULT_LENGTH = 4;
+    private static int DEFAULT_LENGTH = 4;
 
     private int length;
     private Object[] array;
@@ -34,12 +34,16 @@ public class ArrayQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public void enqueue(T t) {
+    public boolean enqueue(T t) {
         if (tail >= length) {
-            System.out.println("queue is full");
-            return;
+            this.compress();
+            if (tail >= length) {
+                System.out.println("queue is full");
+                return false;
+            }
         }
         array[tail++] = t;
+        return true;
     }
 
     @Override
@@ -49,7 +53,6 @@ public class ArrayQueue<T> implements IQueue<T> {
         }
         T e = (T) array[head];
         array[head++] = null;
-        this.compress();
         return e;
     }
 
