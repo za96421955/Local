@@ -5,7 +5,13 @@ import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
 import java.util.Arrays;
 
 /**
- * 插入排序
+ * 插入排序（稳定, 原地排序）
+ * 空间复杂度：O(1)
+ * 时间复杂度：O(n^2)
+ *
+ * 10W，0-199 随机数
+ * 耗时: 810ms
+ * compare: 2486580609, swap: 99999
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
