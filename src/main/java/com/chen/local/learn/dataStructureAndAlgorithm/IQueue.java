@@ -32,6 +32,10 @@ public interface IQueue<T> {
 
     void clear();
 
+    boolean isFull();
+
+    boolean isEmpty();
+
 }
 
 

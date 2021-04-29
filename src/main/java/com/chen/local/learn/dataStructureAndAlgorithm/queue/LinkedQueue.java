@@ -41,10 +41,10 @@ public class LinkedQueue<T> implements IQueue<T> {
 
     @Override
     public T dequeue() {
-        LinkedQueue<T> removeNode = head;
-        if (removeNode == null) {
+        if (this.isEmpty()) {
             return null;
         }
+        LinkedQueue<T> removeNode = head;
         T element = removeNode.element;
         head = removeNode.next;
         // 移除head
@@ -64,6 +64,16 @@ public class LinkedQueue<T> implements IQueue<T> {
         head = null;
         tail = null;
         length = 0;
+    }
+
+    @Override
+    public boolean isFull() {
+        return false;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return head == null;
     }
 
     @Override

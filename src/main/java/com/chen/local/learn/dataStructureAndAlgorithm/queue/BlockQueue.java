@@ -2,6 +2,8 @@ package com.chen.local.learn.dataStructureAndAlgorithm.queue;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.IQueue;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 阻塞队列（基于循环队列）
  * <p> <功能详细描述> </p>
@@ -13,11 +15,10 @@ import com.chen.local.learn.dataStructureAndAlgorithm.IQueue;
 public class BlockQueue<T> implements IQueue<T> {
     private static final int DEFAULT_LENGTH = 4;
 
-    private int length;
     private IQueue<T> queue;
 
-    private final Object enqueueLock = new Object();
-    private final Object dequeueLock = new Object();
+    private AtomicInteger enqueueLock;
+    private AtomicInteger dequeueLock;
 
     public BlockQueue() {
         this.init(DEFAULT_LENGTH);
@@ -28,45 +29,55 @@ public class BlockQueue<T> implements IQueue<T> {
     }
 
     private void init(int length) {
-        this.length = length;
         this.queue = new CasQueue<>(length);
+        this.enqueueLock = new AtomicInteger(0);
+        this.dequeueLock = new AtomicInteger(0);
+    }
+
+    private boolean getLock(AtomicInteger lock) {
+        while (!lock.compareAndSet(0, 1));
+        return true;
+    }
+
+    private void unlock(AtomicInteger lock) {
+        lock.set(0);
+    }
+
+    private void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean enqueue(T t) {
-        synchronized (enqueueLock) {
-            if (queue.size() >= length) {
-                System.out.println("enqueue wait <<<===️");
-                try {
-                    enqueueLock.wait();
-                } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage());
-                }
+        while (this.getLock(enqueueLock)) {
+            if (this.isFull()) {
+                this.unlock(enqueueLock);
+                this.sleep(33L);
+            } else {
+                break;
             }
         }
         queue.enqueue(t);
-        synchronized (dequeueLock) {
-            dequeueLock.notify();
-        }
+        this.unlock(enqueueLock);
         return true;
     }
 
     @Override
     public T dequeue() {
-        synchronized (dequeueLock) {
-            if (queue.size() <= 0) {
-                System.out.println("dequeue wait ===>>>");
-                try {
-                    dequeueLock.wait();
-                } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage());
-                }
+        while (this.getLock(dequeueLock)) {
+            if (this.isEmpty()) {
+                this.unlock(dequeueLock);
+                this.sleep(33L);
+            } else {
+                break;
             }
         }
         T element = queue.dequeue();
-        synchronized (enqueueLock) {
-            enqueueLock.notify();
-        }
+        this.unlock(dequeueLock);
         return element;
     }
 
@@ -77,9 +88,21 @@ public class BlockQueue<T> implements IQueue<T> {
 
     @Override
     public void clear() {
+        this.getLock(enqueueLock);
+        this.getLock(dequeueLock);
         queue.clear();
-        dequeueLock.notifyAll();
-        enqueueLock.notifyAll();
+        this.unlock(enqueueLock);
+        this.unlock(dequeueLock);
+    }
+
+    @Override
+    public boolean isFull() {
+        return queue.isFull();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return queue.isEmpty();
     }
 
     @Override
@@ -88,67 +111,43 @@ public class BlockQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
-        int size = 1000;
-        int threads = 2;
-        final int step = size / threads;
-
-        IQueue<String> queue = new BlockQueue<>(4);
+        IQueue<String> queue = new BlockQueue<>(100);
 
         // input
-        for (int j = 0; j < threads; j++) {
-            final int j100 = j * step;
+        for (int j = 0; j < 100; j++) {
+            final int finalJ = j;
             new Thread(() -> {
+                long begin = System.currentTimeMillis();
                 try {
-                    for (int i = j100 + 1; i <= j100 + step; i++) {
-                        try {
-                            queue.enqueue(i + "");
-                            System.out.println("EN <<<===️: " + i);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            i--;
-                        }
-//                    Thread.sleep((long) (Math.random() * 50));
+                    for (int i = 1; i <= 10000; i++) {
+                        queue.enqueue(i + "");
+                        System.out.println("EN <<<===️: " + i + ", " + queue.size());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                long end = System.currentTimeMillis();
+                System.out.println("EN线程[" + finalJ + "], 耗时: " + (end - begin) + "ms");
             }).start();
         }
 
         // out
-//        for (int j = 0; j < threads; j++) {
-//            new Thread(() -> {
-//                try {
-//                    for (int i = 0; i < step; i++) {
-//                        try {
-//                            String e = queue.dequeue();
-//                            System.out.println("DE ===>>>: " + e);
-//                        } catch (Exception e) {
-//                            i--;
-//                        }
-////                    Thread.sleep((long) (Math.random() * 20));
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }).start();
-//        }
-
-        new Thread(() -> {
-            try {
-                for (int i = 0; i < size; i++) {
-                    try {
+        for (int j = 0; j < 100; j++) {
+            final int finalJ = j;
+            new Thread(() -> {
+                long begin = System.currentTimeMillis();
+                try {
+                    for (int i = 0; i < 10000; i++) {
                         String e = queue.dequeue();
-                        System.out.println("DE ===>>>: " + e);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        i--;
+                        System.out.println("DE ===>>>: " + e + ", " + queue.size());
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+                long end = System.currentTimeMillis();
+                System.out.println("DE线程[" + finalJ + "], 耗时: " + (end - begin) + "ms");
+            }).start();
+        }
     }
 
 }

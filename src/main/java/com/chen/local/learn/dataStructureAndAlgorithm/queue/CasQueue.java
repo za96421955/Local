@@ -42,7 +42,7 @@ public class CasQueue<T> implements IQueue<T> {
     @Override
     public boolean enqueue(T t) {
         do {
-            if ((tail.get() + 1) % length == head.get()) {
+            if (this.isFull()) {
                 throw new RuntimeException("queue is full");
             }
         } while (!this.casEnqueue(t));
@@ -63,7 +63,7 @@ public class CasQueue<T> implements IQueue<T> {
     public T dequeue() {
         int curr;
         do {
-            if (head.get() == tail.get()) {
+            if (this.isEmpty()) {
                 throw new RuntimeException("queue is empty");
             }
         } while ((curr = this.casDequeue()) == -1);
@@ -83,15 +83,28 @@ public class CasQueue<T> implements IQueue<T> {
 
     @Override
     public int size() {
-        if (tail.get() >= head.get()) {
-            return tail.get() - head.get();
+        int finalLength = length;
+        int finalHead = head.get();
+        int finalTail = tail.get();
+        if (finalTail >= finalHead) {
+            return finalTail - finalHead;
         }
-        return length - head.get() + tail.get();
+        return finalLength - finalHead + finalTail;
     }
 
     @Override
     public void clear() {
         this.init(length);
+    }
+
+    @Override
+    public boolean isFull() {
+        return (tail.get() + 1) % length == head.get();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return head.get() == tail.get();
     }
 
     @Override
@@ -105,18 +118,47 @@ public class CasQueue<T> implements IQueue<T> {
         return "[" + (sb.length() <= 0 ? "" : sb.substring(1)) + "]";
     }
 
-    public static void main(String[] args) {
-        IQueue<String> queue = new CasQueue<>(100);
+    public static void main(String[] args) throws Exception {
+        IQueue<String> queue = new CasQueue<>(4);
         // input
         for (int j = 0; j < 10; j++) {
             new Thread(() -> {
-                try {
-                    for (int i = 1; i <= 100; i++) {
+                for (int i = 1; i <= 100; i++) {
+                    try {
                         queue.enqueue(i + "");
                         System.out.println("EN <<<===️: " + i + ", " + queue.size());
+                    } catch (Exception e) {
+//                        e.printStackTrace();
+                        try {
+                            Thread.sleep(50L);
+                        } catch (InterruptedException interruptedException) {
+                            interruptedException.printStackTrace();
+                        }
+                        i--;
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }
+                System.out.println(queue.size());
+            }).start();
+        }
+
+//        Thread.sleep(30L);
+
+        // out
+        for (int j = 0; j < 10; j++) {
+            new Thread(() -> {
+                for (int i = 1; i <= 100; i++) {
+                    try {
+                        String result = queue.dequeue();
+                        System.out.println("DE <<<===️: " + result + ", " + queue.size());
+                    } catch (Exception e) {
+//                        e.printStackTrace();
+                        try {
+                            Thread.sleep(50L);
+                        } catch (InterruptedException interruptedException) {
+                            interruptedException.printStackTrace();
+                        }
+                        i--;
+                    }
                 }
                 System.out.println(queue.size());
             }).start();

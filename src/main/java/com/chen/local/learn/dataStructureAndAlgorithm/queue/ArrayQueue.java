@@ -35,7 +35,7 @@ public class ArrayQueue<T> implements IQueue<T> {
 
     @Override
     public boolean enqueue(T t) {
-        if (tail >= length) {
+        if (this.isFull()) {
             this.compress();
             if (tail >= length) {
                 System.out.println("queue is full");
@@ -48,7 +48,7 @@ public class ArrayQueue<T> implements IQueue<T> {
 
     @Override
     public T dequeue() {
-        if (this.size() <= 0) {
+        if (this.isEmpty()) {
             return null;
         }
         T e = (T) array[head];
@@ -76,6 +76,16 @@ public class ArrayQueue<T> implements IQueue<T> {
     @Override
     public void clear() {
         this.init(length);
+    }
+
+    @Override
+    public boolean isFull() {
+        return tail >= length;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.size() <= 0;
     }
 
     @Override

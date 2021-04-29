@@ -39,7 +39,7 @@ public class CycleQueue<T> implements IQueue<T> {
 
     @Override
     public boolean enqueue(T t) {
-        if ((tail + 1) % length == head) {
+        if (this.isFull()) {
             throw new RuntimeException("queue is full");
         }
         array[tail] = t;
@@ -49,7 +49,7 @@ public class CycleQueue<T> implements IQueue<T> {
 
     @Override
     public T dequeue() {
-        if (head == tail) {
+        if (this.isEmpty()) {
             throw new RuntimeException("queue is empty");
         }
         T element = (T) array[head];
@@ -69,6 +69,16 @@ public class CycleQueue<T> implements IQueue<T> {
     @Override
     public void clear() {
         this.init(length);
+    }
+
+    @Override
+    public boolean isFull() {
+        return (tail + 1) % length == head;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return head == tail;
     }
 
     @Override
@@ -126,12 +136,12 @@ public class CycleQueue<T> implements IQueue<T> {
 //        System.out.println(queue.size());
 
 
-        IQueue<String> queue = new CasQueue<>(100);
+        IQueue<String> queue = new CycleQueue<>(1000000);
         // input
-        for (int j = 0; j < 10; j++) {
+        for (int j = 0; j < 1000; j++) {
             new Thread(() -> {
                 try {
-                    for (int i = 1; i <= 100; i++) {
+                    for (int i = 1; i <= 1000; i++) {
                         queue.enqueue(i + "");
                         System.out.println("EN <<<===️: " + i + ", " + queue.size());
                     }
