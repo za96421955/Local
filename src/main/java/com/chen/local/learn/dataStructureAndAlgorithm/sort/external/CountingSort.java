@@ -5,7 +5,7 @@ import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
 import java.util.Arrays;
 
 /**
- * 计数排序（稳定, 非原地排序, 可外部排序（内存外/硬盘））
+ * 线性排序: 计数排序（稳定, 非原地排序, 可外部排序（内存外/硬盘））
  * （桶排序的特殊情况）
  * 空间复杂度：O(n)
  * 时间复杂度：O(n)
@@ -18,9 +18,21 @@ import java.util.Arrays;
  * 耗时: 13ms
  * compare: 0, option: 3000199
  *
+ * 100W，0-999999 随机数
+ * 耗时: 13ms
+ * compare: 0, option: 3999999
+ *
  * 1000W，0-199 随机数
  * 耗时: 64ms
  * compare: 0, option: 30000199
+ *
+ * 1000W，0-999999 随机数
+ * 耗时: 97ms
+ * compare: 0, option: 30999999
+ *
+ * 1亿，0-999999 随机数
+ * 耗时: 1057ms
+ * compare: 0, option: 300999999
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
@@ -41,7 +53,7 @@ public class CountingSort implements ISort {
     public void sort(int[] elements) {
         this.init();
         // 计数
-        int[] counts = new int[200];
+        int[] counts = new int[1000000];
         for (Integer e : elements) {
             ++optionCount;
             counts[e] = counts[e] + 1;
@@ -84,9 +96,9 @@ public class CountingSort implements ISort {
         System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
-        elements = new int[100000];
+        elements = new int[100000000];
         for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 200);
+            elements[i] = (int) (Math.random() * 1000000);  // 1000000
         }
 //        System.out.println(Arrays.toString(elements));
 
