@@ -61,7 +61,7 @@ public class InsertSort implements ISort {
     public static void main(String[] args) {
         ISort sort = new InsertSort();
 
-        int[] elements = {6, 5, 4, 3, 2, 1};
+        int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
         System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());

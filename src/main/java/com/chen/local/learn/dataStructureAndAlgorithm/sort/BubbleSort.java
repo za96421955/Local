@@ -64,7 +64,7 @@ public class BubbleSort implements ISort {
     public static void main(String[] args) {
         ISort sort = new BubbleSort();
 
-        int[] elements = {4, 3, 2, 1, 5, 6};
+        int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
         System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());

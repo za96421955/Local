@@ -5,29 +5,28 @@ import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
 import java.util.Arrays;
 
 /**
- * 归并排序（稳定，非原地排序）
- * 空间复杂度：O(n), 需要2n空间
+ * 快速排序（不稳定，原地排序）
+ * 空间复杂度：O(n)
  * 时间复杂度：O(nlogn)
  *
- * // 二分归并
+ * // 原地交换, 获取中位数
  * 10W，0-199 随机数
- * 耗时: 10ms
- * compare: 1534807, swap: 1734805
+ * 耗时: 21ms
+ * compare: 25908409, swap: 548674
  *
  * 100W，0-199 随机数
- * 耗时: 84ms
- * compare: 18649507, swap: 20649505
+ * 耗时: 1078ms
+ * compare: 2510276347, swap: 5925982
  *
  * 1000W，0-199 随机数
- * 耗时: 754ms
- * compare: 219780707, swap: 239780705
+ * StackOverflowError
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
  * @version 1.0
- * @date 2021/4/29
+ * @date 2021/4/30
  */
-public class MergeSort implements ISort {
+public class QuickSort implements ISort {
 
     private long compareCount;
     private long swapCount;
@@ -40,51 +39,45 @@ public class MergeSort implements ISort {
     @Override
     public void sort(int[] elements) {
         this.init();
-        this.mergeSort(elements, 0, elements.length - 1);
+        this.quickSort(elements, 0, elements.length - 1);
     }
 
-    private void mergeSort(int[] elements, int begin, int end) {
+    public void quickSort(int[] elements, int begin, int end) {
         if (begin >= end) {
             return;
         }
-        int mid = (begin + end) / 2;
-        this.mergeSort(elements, begin, mid);
-        this.mergeSort(elements, mid + 1, end);
-        // 合并有序数组
-        this.merge(elements, begin, mid, end);
+        int p = this.partition(elements, begin, end);
+//        System.out.println("\nbegin: " + begin + ", end: " + end + ", p: " + p);
+//        System.out.println(Arrays.toString(elements));
+        this.quickSort(elements, begin, p - 1);
+        this.quickSort(elements, p + 1, end);
     }
 
-    private void merge(int[] elements, int begin, int mid, int end) {
-//        System.out.println("\nbegin: " + begin + ", mid: " + mid + ", end: " + end);
-//        System.out.println(Arrays.toString(elements));
-
-        // begin - mid, mid + 1 - end, 分别为有序内容
-        // 新建临时数组, 依次填入begin - mid, mid + 1 - end内容
-        int[] temps = new int[end - begin + 1];
-        int before = begin;
-        int after = mid + 1;
-        int curr = 0;
-        while (before <= mid && after <= end) {
+    /**
+     * 获取中位数
+     */
+    private int partition(int[] elements, int begin, int end) {
+        int partitionValue = elements[end];
+        int partition = begin;
+        for (int i = begin; i <= end - 1; ++i) {
             ++compareCount;
-            ++swapCount;
-            if (elements[before] <= elements[after]) {
-                temps[curr++] = elements[before++];
-            } else {
-                temps[curr++] = elements[after++];
+            if (elements[i] < partitionValue) {
+                if (partition != i) {
+                    ++swapCount;
+                    int temp = elements[partition];
+                    elements[partition] = elements[i];
+                    elements[i] = temp;
+                }
+                ++partition;
             }
         }
-
-        // 拷贝剩余数组内容
-        ++swapCount;
-        if (before <= mid) {
-            System.arraycopy(elements, before, temps, curr, mid - before + 1);
-        } else {
-            System.arraycopy(elements, after, temps, curr, end - after + 1);
+        if (partition != end) {
+            ++swapCount;
+            int temp = elements[partition];
+            elements[partition] = elements[end];
+            elements[end] = temp;
         }
-
-        // 临时数组拷贝回原数组
-        ++swapCount;
-        System.arraycopy(temps, 0, elements, begin, end - begin + 1);
+        return partition;
     }
 
     @Override
@@ -98,9 +91,10 @@ public class MergeSort implements ISort {
     }
 
     public static void main(String[] args) {
-        ISort sort = new MergeSort();
+        ISort sort = new QuickSort();
 
         int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
+        System.out.println(Arrays.toString(elements));
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
         System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
