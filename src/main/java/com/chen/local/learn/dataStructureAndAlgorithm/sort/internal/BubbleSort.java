@@ -21,11 +21,11 @@ import java.util.Arrays;
 public class BubbleSort implements ISort {
 
     private long compareCount;
-    private long swapCount;
+    private long optionCount;
 
     private void init() {
         this.compareCount = 0;
-        this.swapCount = 0;
+        this.optionCount = 0;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class BubbleSort implements ISort {
             for (int j = i + 1; j < length; j++) {
                 compareCount++;
                 if (elements[i] > elements[j]) {
-                    swapCount++;
+                    optionCount++;
                     int temp = elements[i];
                     elements[i] = elements[j];
                     elements[j] = temp;
@@ -51,8 +51,8 @@ public class BubbleSort implements ISort {
     }
 
     @Override
-    public long getSwapCount() {
-        return swapCount;
+    public long getOptionCount() {
+        return optionCount;
     }
 
     public static void main(String[] args) {
@@ -61,7 +61,7 @@ public class BubbleSort implements ISort {
         int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
         elements = new int[100000];
@@ -77,7 +77,7 @@ public class BubbleSort implements ISort {
 //        System.out.println(Arrays.toString(elements));
 
         System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
     }
 
 }

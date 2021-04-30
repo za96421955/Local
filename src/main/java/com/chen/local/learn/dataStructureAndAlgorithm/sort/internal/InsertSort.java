@@ -21,11 +21,11 @@ import java.util.Arrays;
 public class InsertSort implements ISort {
 
     private long compareCount;
-    private long swapCount;
+    private long optionCount;
 
     private void init() {
         this.compareCount = 0;
-        this.swapCount = 0;
+        this.optionCount = 0;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class InsertSort implements ISort {
                     break;
                 }
             }
-            swapCount++;
+            optionCount++;
             elements[j + 1] = curr;
         }
     }
@@ -54,8 +54,8 @@ public class InsertSort implements ISort {
     }
 
     @Override
-    public long getSwapCount() {
-        return swapCount;
+    public long getOptionCount() {
+        return optionCount;
     }
 
     public static void main(String[] args) {
@@ -64,7 +64,7 @@ public class InsertSort implements ISort {
         int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
         elements = new int[100000];
@@ -80,7 +80,7 @@ public class InsertSort implements ISort {
 //        System.out.println(Arrays.toString(elements));
 
         System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
     }
 
 }

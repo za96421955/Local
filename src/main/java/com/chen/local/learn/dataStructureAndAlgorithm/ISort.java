@@ -18,7 +18,7 @@ public interface ISort {
 
     long getCompareCount();
 
-    long getSwapCount();
+    long getOptionCount();
 
 }
 

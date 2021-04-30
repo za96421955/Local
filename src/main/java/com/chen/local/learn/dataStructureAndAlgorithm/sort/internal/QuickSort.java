@@ -29,11 +29,11 @@ import java.util.Arrays;
 public class QuickSort implements ISort {
 
     private long compareCount;
-    private long swapCount;
+    private long optionCount;
 
     private void init() {
         this.compareCount = 0;
-        this.swapCount = 0;
+        this.optionCount = 0;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class QuickSort implements ISort {
             ++compareCount;
             if (elements[i] < partitionValue) {
                 if (partition != i) {
-                    ++swapCount;
+                    ++optionCount;
                     int temp = elements[partition];
                     elements[partition] = elements[i];
                     elements[i] = temp;
@@ -72,7 +72,7 @@ public class QuickSort implements ISort {
             }
         }
         if (partition != end) {
-            ++swapCount;
+            ++optionCount;
             int temp = elements[partition];
             elements[partition] = elements[end];
             elements[end] = temp;
@@ -86,8 +86,8 @@ public class QuickSort implements ISort {
     }
 
     @Override
-    public long getSwapCount() {
-        return swapCount;
+    public long getOptionCount() {
+        return optionCount;
     }
 
     public static void main(String[] args) {
@@ -97,7 +97,7 @@ public class QuickSort implements ISort {
         System.out.println(Arrays.toString(elements));
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
         elements = new int[100000];
@@ -113,7 +113,7 @@ public class QuickSort implements ISort {
 //        System.out.println(Arrays.toString(elements));
 
         System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
     }
 
 }

@@ -30,11 +30,11 @@ import java.util.Arrays;
 public class MergeSort implements ISort {
 
     private long compareCount;
-    private long swapCount;
+    private long optionCount;
 
     private void init() {
         this.compareCount = 0;
-        this.swapCount = 0;
+        this.optionCount = 0;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class MergeSort implements ISort {
         int curr = 0;
         while (before <= mid && after <= end) {
             ++compareCount;
-            ++swapCount;
+            ++optionCount;
             if (elements[before] <= elements[after]) {
                 temps[curr++] = elements[before++];
             } else {
@@ -76,15 +76,15 @@ public class MergeSort implements ISort {
 
         // 拷贝剩余数组内容
         if (before <= mid) {
-            swapCount += mid - before + 1;
+            optionCount += mid - before + 1;
             System.arraycopy(elements, before, temps, curr, mid - before + 1);
         } else {
-            swapCount += end - after + 1;
+            optionCount += end - after + 1;
             System.arraycopy(elements, after, temps, curr, end - after + 1);
         }
 
         // 临时数组拷贝回原数组
-        swapCount += end - begin + 1;
+        optionCount += end - begin + 1;
         System.arraycopy(temps, 0, elements, begin, end - begin + 1);
     }
 
@@ -94,8 +94,8 @@ public class MergeSort implements ISort {
     }
 
     @Override
-    public long getSwapCount() {
-        return swapCount;
+    public long getOptionCount() {
+        return optionCount;
     }
 
     public static void main(String[] args) {
@@ -104,7 +104,7 @@ public class MergeSort implements ISort {
         int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
         elements = new int[100000];
@@ -120,7 +120,7 @@ public class MergeSort implements ISort {
 //        System.out.println(Arrays.toString(elements));
 
         System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
+        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
     }
 
 }
