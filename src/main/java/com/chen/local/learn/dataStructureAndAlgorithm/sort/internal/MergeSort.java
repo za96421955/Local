@@ -1,4 +1,4 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.sort;
+package com.chen.local.learn.dataStructureAndAlgorithm.sort.internal;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
 
@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 /**
  * 归并排序（稳定，非原地排序）
- * 空间复杂度：O(n), 需要2n空间
+ * 空间复杂度：O(n)
  * 时间复杂度：O(nlogn)
  *
  * // 二分归并
@@ -75,15 +75,16 @@ public class MergeSort implements ISort {
         }
 
         // 拷贝剩余数组内容
-        ++swapCount;
         if (before <= mid) {
+            swapCount += mid - before + 1;
             System.arraycopy(elements, before, temps, curr, mid - before + 1);
         } else {
+            swapCount += end - after + 1;
             System.arraycopy(elements, after, temps, curr, end - after + 1);
         }
 
         // 临时数组拷贝回原数组
-        ++swapCount;
+        swapCount += end - begin + 1;
         System.arraycopy(temps, 0, elements, begin, end - begin + 1);
     }
 
@@ -106,7 +107,7 @@ public class MergeSort implements ISort {
         System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
 
         System.out.println("\n===================================");
-        elements = new int[10000000];
+        elements = new int[100000];
         for (int i = 0; i < elements.length; ++i) {
             elements[i] = (int) (Math.random() * 200);
         }

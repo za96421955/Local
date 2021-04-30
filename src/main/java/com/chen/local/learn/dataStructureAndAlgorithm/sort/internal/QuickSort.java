@@ -1,4 +1,4 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.sort;
+package com.chen.local.learn.dataStructureAndAlgorithm.sort.internal;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
 
@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 /**
  * 快速排序（不稳定，原地排序）
- * 空间复杂度：O(n)
+ * 空间复杂度：O(1)
  * 时间复杂度：O(nlogn)
  *
  * // 原地交换, 获取中位数
@@ -100,7 +100,7 @@ public class QuickSort implements ISort {
         System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
 
         System.out.println("\n===================================");
-        elements = new int[10000000];
+        elements = new int[100000];
         for (int i = 0; i < elements.length; ++i) {
             elements[i] = (int) (Math.random() * 200);
         }

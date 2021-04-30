@@ -1,4 +1,4 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.sort;
+package com.chen.local.learn.dataStructureAndAlgorithm.sort.internal;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
 
@@ -71,10 +71,14 @@ public class InsertSort implements ISort {
         for (int i = 0; i < elements.length; ++i) {
             elements[i] = (int) (Math.random() * 200);
         }
+//        System.out.println(Arrays.toString(elements));
+
+        System.out.println("Sort Start: ");
         long begin = System.currentTimeMillis();
         sort.sort(elements);
         long end = System.currentTimeMillis();
 //        System.out.println(Arrays.toString(elements));
+
         System.out.println("耗时: " + (end - begin) + "ms");
         System.out.println("compare: " + sort.getCompareCount() + ", swap: " + sort.getSwapCount());
     }
