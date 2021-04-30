@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * 10W，0-199 随机数
  * 耗时: 3981ms
- * compare: 5000049999, swap: 99474
+ * compare: 5000049999, option: 99474
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨

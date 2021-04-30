@@ -12,15 +12,15 @@ import java.util.Arrays;
  * // 二分归并
  * 10W，0-199 随机数
  * 耗时: 10ms
- * compare: 1534807, swap: 1734805
+ * compare: 1534807, option: 1734805
  *
  * 100W，0-199 随机数
  * 耗时: 84ms
- * compare: 18649507, swap: 20649505
+ * compare: 18649507, option: 20649505
  *
  * 1000W，0-199 随机数
  * 耗时: 754ms
- * compare: 219780707, swap: 239780705
+ * compare: 219780707, option: 239780705
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨

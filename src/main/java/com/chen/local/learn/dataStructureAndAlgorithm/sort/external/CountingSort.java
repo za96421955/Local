@@ -6,20 +6,21 @@ import java.util.Arrays;
 
 /**
  * 计数排序（稳定, 非原地排序, 可外部排序（内存外/硬盘））
+ * （桶排序的特殊情况）
  * 空间复杂度：O(n)
  * 时间复杂度：O(n)
  *
  * 10W，0-199 随机数
  * 耗时: 7ms
- * compare: 0, swap: 300199
+ * compare: 0, option: 300199
  *
  * 100W，0-199 随机数
  * 耗时: 13ms
- * compare: 0, swap: 3000199
+ * compare: 0, option: 3000199
  *
  * 1000W，0-199 随机数
  * 耗时: 64ms
- * compare: 0, swap: 30000199
+ * compare: 0, option: 30000199
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨

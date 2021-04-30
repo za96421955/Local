@@ -12,11 +12,11 @@ import java.util.Arrays;
  * // 原地交换, 获取中位数
  * 10W，0-199 随机数
  * 耗时: 21ms
- * compare: 25908409, swap: 548674
+ * compare: 25908409, option: 548674
  *
  * 100W，0-199 随机数
  * 耗时: 1078ms
- * compare: 2510276347, swap: 5925982
+ * compare: 2510276347, option: 5925982
  *
  * 1000W，0-199 随机数
  * StackOverflowError
@@ -55,6 +55,7 @@ public class QuickSort implements ISort {
 
     /**
      * 获取中位数
+     * 最简单的中位数获取方式, 非效率最高
      */
     private int partition(int[] elements, int begin, int end) {
         int partitionValue = elements[end];
