@@ -18,8 +18,16 @@ import java.util.Arrays;
  * 耗时: 1078ms
  * compare: 2510276347, option: 5925982
  *
+ * 100W，0-999 随机数
+ * 耗时: 284ms
+ * compare: 512379277, option: 7084010
+ *
  * 1000W，0-199 随机数
  * StackOverflowError
+ *
+ * 1000W，0-999 随机数
+ * 耗时: 20320ms
+ * compare: 50127812168, option: 74462296
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
@@ -101,9 +109,9 @@ public class QuickSort implements ISort {
         System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
-        elements = new int[100000];
+        elements = new int[10000000];
         for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 200);
+            elements[i] = (int) (Math.random() * 1000);
         }
 //        System.out.println(Arrays.toString(elements));
 
