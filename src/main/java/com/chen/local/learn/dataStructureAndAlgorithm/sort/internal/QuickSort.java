@@ -15,8 +15,8 @@ import java.util.Arrays;
  * compare: 25908409, option: 548674
  *
  * 100W，0-199 随机数
- * 耗时: 1078ms
- * compare: 2510276347, option: 5925982
+ * 平均耗时: 1072ms
+ * compare: 2509143818, option: 5876238
  *
  * 100W，0-999 随机数
  * 耗时: 284ms
@@ -68,25 +68,25 @@ public class QuickSort implements ISort {
     private int partition(int[] elements, int begin, int end) {
         int partitionValue = elements[end];
         int partition = begin;
+        compareCount += end - begin;
         for (int i = begin; i <= end - 1; ++i) {
-            ++compareCount;
             if (elements[i] < partitionValue) {
-                if (partition != i) {
-                    ++optionCount;
-                    int temp = elements[partition];
-                    elements[partition] = elements[i];
-                    elements[i] = temp;
-                }
+                this.swap(elements, partition, i);
                 ++partition;
             }
         }
-        if (partition != end) {
-            ++optionCount;
-            int temp = elements[partition];
-            elements[partition] = elements[end];
-            elements[end] = temp;
-        }
+        this.swap(elements, partition, end);
         return partition;
+    }
+
+    private void swap(int[] elements, int i, int j) {
+        if (i == j) {
+            return;
+        }
+        ++optionCount;
+        int temp = elements[i];
+        elements[i] = elements[j];
+        elements[j] = temp;
     }
 
     @Override
@@ -97,32 +97,6 @@ public class QuickSort implements ISort {
     @Override
     public long getOptionCount() {
         return optionCount;
-    }
-
-    public static void main(String[] args) {
-        ISort sort = new QuickSort();
-
-        int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
-        System.out.println(Arrays.toString(elements));
-        sort.sort(elements);
-        System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
-
-        System.out.println("\n===================================");
-        elements = new int[1000000];
-        for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 200);
-        }
-//        System.out.println(Arrays.toString(elements));
-
-        System.out.println("Sort Start: ");
-        long begin = System.currentTimeMillis();
-        sort.sort(elements);
-        long end = System.currentTimeMillis();
-//        System.out.println(Arrays.toString(elements));
-
-        System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
     }
 
 }

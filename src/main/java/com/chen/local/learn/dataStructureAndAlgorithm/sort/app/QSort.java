@@ -18,12 +18,12 @@ import java.util.Arrays;
  * compare: 1534799, option: 3337856
  *
  * 100W，0-199 随机数
- * 耗时: 1490ms
- * compare: 2511595276, option: 7320116
+ * 耗时: 854ms
+ * compare: 2509203617, option: 4974885
  *
  * 100W，0-999 随机数
- * 耗时: 443ms
- * compare: 514344223, option: 8738089
+ * 100次平均耗时: 208ms
+ * compare: 512939446, option: 6816479
  *
  * 1000W，0-199 随机数
  * StackOverflowError
@@ -56,15 +56,23 @@ public class QSort implements ISort {
     @Override
     public void sort(int[] elements) {
         this.init();
-        // 1, 数据量不大时(<1MB, 262144), 使用归并排序
+        // 1, 数据量 <= 4时, 退化为插入排序
+        if (elements.length <= 4) {
+            System.out.println("Run Insert Sort");
+            insertSort.sort(elements);
+            compareCount += insertSort.getCompareCount();
+            optionCount += insertSort.getOptionCount();
+            return;
+        }
+        // 2, 数据量不大时(<1MB, 262144), 使用归并排序
         if (elements.length <= MERGE_SORT_LIMIT) {
-//            System.out.println("Run Merge Sort");
+            System.out.println("Run Merge Sort");
             mergeSort.sort(elements);
             compareCount = mergeSort.getCompareCount();
             optionCount = mergeSort.getOptionCount();
             return;
         }
-        // 2, 快速排序, 使用三数取中法
+        // 3, 快速排序, 使用三数取中法
         this.quickSort(elements, 0, elements.length - 1);
     }
 
@@ -72,69 +80,57 @@ public class QSort implements ISort {
         if (begin >= end) {
             return;
         }
-
-        // 3, 数据量 <= 4时, 退化为插入排序
-        if (end - begin + 1 <= 4) {
-//            System.out.println("\nRun Insert Sort");
-            int[] sorting = new int[end - begin + 1];
-            System.arraycopy(elements, begin, sorting, 0, sorting.length);
-//            System.out.println("begin: " + begin + ", end: " + end);
-//            System.out.println(Arrays.toString(elements));
-
-            insertSort.sort(sorting);
-            compareCount += insertSort.getCompareCount();
-            optionCount += insertSort.getOptionCount();
-            System.arraycopy(sorting, 0, elements, begin, sorting.length);
-//            System.out.println(Arrays.toString(elements));
-            return;
-        }
-
-        // 2, 快速排序, 使用三数取中法
+        // 快速排序, 使用三数取中法
         int p = this.partition(elements, begin, end);
         this.quickSort(elements, begin, p - 1);
         this.quickSort(elements, p + 1, end);
     }
 
     /**
+     * 获取中位数
+     * 最简单的中位数获取方式, 非效率最高
+     */
+//    private int partition(int[] elements, int begin, int end) {
+//        int partitionValue = elements[end];
+//        int partition = begin;
+//        for (int i = begin; i <= end - 1; ++i) {
+//            ++compareCount;
+//            if (elements[i] < partitionValue) {
+//                this.swap(elements, partition, i);
+//                ++partition;
+//            }
+//        }
+//        this.swap(elements, partition, end);
+//        return partition;
+//    }
+
+    /**
      * 获取中位数, 三数取中
      */
     private int partition(int[] elements, int begin, int end) {
         // 三数取中
-        int mid = (begin + end) / 2;
-        int[] pvs = {elements[begin], elements[end], elements[mid]};
-        insertSort.sort(pvs);
-        compareCount += insertSort.getCompareCount();
-        optionCount += insertSort.getOptionCount();
-        int pv = pvs[1];
-        int pi = mid;
-        if (pv == elements[begin]) {
-            pi = begin;
-        }
-        if (pv == elements[end]) {
+        int pi = end + (begin - end) / 2;
+        int pv = elements[pi];
+        int head = elements[begin];
+        int tail = elements[end];
+        if ((head < tail && tail < pv)
+            || (pv < tail && tail < head)) {
+            pv = tail;
             pi = end;
         }
+        else if ((tail < head && head < pv)
+            || (pv < head && head < tail)) {
+            pv = head;
+            pi = begin;
+        }
 
-//        int mid = (begin + end) / 2;
-//        int head = elements[begin];
-//        int tail = elements[end];
-//        int pv = elements[mid];
-//        int pi = mid;
-//        if (head < tail && tail < pv) {
-//            pv = tail;
-//            pi = end;
-//        }
-//        if (tail < head && head < pv) {
-//            pv = head;
-//            pi = begin;
-//        }
-
-        // 二分运算
+        // 二分运算, 获取中位数索引
         int p = begin;
+        compareCount += end - begin + 1;
         for (int i = begin; i <= end; ++i) {
-            ++compareCount;
             if (elements[i] < pv) {
                 this.swap(elements, p, i);
-                if (p == pi) {
+                if (p == pi) {  // 保持 pi >= p
                     pi = i;
                 }
                 ++p;
@@ -162,32 +158,6 @@ public class QSort implements ISort {
     @Override
     public long getOptionCount() {
         return optionCount;
-    }
-
-    public static void main(String[] args) {
-        ISort sort = new QSort();
-
-        int[] elements = {18, 5, 14, 3, 14, 15, 9, 15, 15, 10, 6, 16, 0, 18, 18, 3, 2, 7, 17, 11, 15, 2, 16, 10, 7, 6, 7, 18, 16, 0};
-        System.out.println(Arrays.toString(elements));
-        sort.sort(elements);
-        System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
-
-        System.out.println("\n===================================");
-        elements = new int[1000000];
-        for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 200);
-        }
-//        System.out.println(Arrays.toString(elements));
-
-        System.out.println("Sort Start: ");
-        long begin = System.currentTimeMillis();
-        sort.sort(elements);
-        long end = System.currentTimeMillis();
-//        System.out.println(Arrays.toString(elements));
-
-        System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
     }
 
 }

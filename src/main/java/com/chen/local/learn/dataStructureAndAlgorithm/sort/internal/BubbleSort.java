@@ -55,31 +55,6 @@ public class BubbleSort implements ISort {
         return optionCount;
     }
 
-    public static void main(String[] args) {
-        ISort sort = new BubbleSort();
-
-        int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
-        sort.sort(elements);
-        System.out.println(Arrays.toString(elements));
-        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
-
-        System.out.println("\n===================================");
-        elements = new int[100000];
-        for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 200);
-        }
-//        System.out.println(Arrays.toString(elements));
-
-        System.out.println("Sort Start: ");
-        long begin = System.currentTimeMillis();
-        sort.sort(elements);
-        long end = System.currentTimeMillis();
-//        System.out.println(Arrays.toString(elements));
-
-        System.out.println("耗时: " + (end - begin) + "ms");
-        System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
-    }
-
 }
 
 
