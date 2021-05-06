@@ -109,9 +109,9 @@ public class QuickSort implements ISort {
         System.out.println("compare: " + sort.getCompareCount() + ", option: " + sort.getOptionCount());
 
         System.out.println("\n===================================");
-        elements = new int[10000000];
+        elements = new int[1000000];
         for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 1000);
+            elements[i] = (int) (Math.random() * 200);
         }
 //        System.out.println(Arrays.toString(elements));
 
