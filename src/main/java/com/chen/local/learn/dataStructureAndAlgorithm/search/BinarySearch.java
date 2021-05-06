@@ -37,7 +37,10 @@ public class BinarySearch implements ISearch {
             return -1;
         }
         searchCount++;
-        int mid = (high + low) >> 1;
+        // high = MAX_INT, low = MAX_INT, int overflow
+//        int mid = (high + low) >> 1;
+        // 避免溢出写法
+        int mid = low + (high - low) >> 1;
         System.out.println("SearchCount: " + searchCount
                 + ", low: " + low
                 + ", high: " + high
