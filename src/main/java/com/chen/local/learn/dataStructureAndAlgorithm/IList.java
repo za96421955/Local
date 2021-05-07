@@ -14,15 +14,11 @@ public interface IList<T> {
 
     void insert(T t, int i);
 
-    void insert(T t, T first);
-
     T get(int i);
-
-    int get(T t);
 
     T remove(int i);
 
-    int remove(T t);
+    T remove(T t);
 
     boolean contains(T t);
 
