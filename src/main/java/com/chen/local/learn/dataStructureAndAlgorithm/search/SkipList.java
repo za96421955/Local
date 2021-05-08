@@ -1,6 +1,8 @@
 package com.chen.local.learn.dataStructureAndAlgorithm.search;
 
-import com.chen.local.learn.dataStructureAndAlgorithm.IList;
+import com.chen.local.learn.dataStructureAndAlgorithm.IIndex;
+
+import java.util.List;
 
 /**
  * 跳表（双向链表）
@@ -10,148 +12,162 @@ import com.chen.local.learn.dataStructureAndAlgorithm.IList;
  * @version 1.0
  * @date 2021/5/6
  */
-public class SkipList implements IList<Integer> {
+public class SkipList<T> implements IIndex<T> {
 
-    private SkipList root;       // 索引根节点
-    private SkipList index;      // 索引哨兵节点
-    private SkipList down;       // 索引下级节点
+    private SkipList<T> root;       // 索引根节点
+    private SkipList<T> top;        // 索引上级节点
+    private SkipList<T> down;       // 索引下级节点
 
-//    private SkipList head;       // 头节点
-    private SkipList tail;       // 尾节点
+    private SkipList<T> sentinel;   // 哨兵节点
+    private SkipList<T> tail;       // 尾节点
+    private SkipList<T> prev;       // 前节点
+    private SkipList<T> next;       // 后节点
 
-    private SkipList prev;       // 前节点
-    private SkipList next;       // 后节点
-
-    private Integer element;              // 元素
+    private int index;              // 索引
+    private T data;                 // 数据
     private int size;               // 链表大小
 
     public SkipList() {
         this.init();
     }
 
-    private SkipList(Integer element, SkipList prev, SkipList next) {
-        this.element = element;
+    private SkipList(int index, T data, SkipList<T> prev, SkipList<T> next, SkipList<T> sentinel) {
+        this.index = index;
+        this.data = data;
         this.prev = prev;
         this.next = next;
+        this.sentinel = sentinel;
     }
 
-    private SkipList(SkipList down, SkipList prev, SkipList next) {
+    private SkipList(SkipList<T> down, SkipList<T> prev, SkipList<T> next, SkipList<T> sentinel) {
         this.down = down;
-        this.element = down.element;
+        this.index = down.index;
         this.prev = prev;
         this.next = next;
+        this.sentinel = sentinel;
     }
 
     private void init() {
         this.root = null;
+        this.top = null;
         this.down = null;
+
+        this.sentinel = null;
         this.tail = null;
         this.prev = null;
         this.next = null;
-        this.element = null;
+
+        this.index = -1;
+        this.data = null;
         this.size = 0;
     }
 
-    private void checkIndex(int i) {
-        if (i < 0 || i >= size) {
-            throw new IndexOutOfBoundsException("size: " + size + ", i: " + i);
+    private void checkIndex(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index " + index + " non-positive integer");
         }
     }
 
-    private SkipList getNode(int i) {
-        int cursor = 0;
-        SkipList curr = next;
-        while (cursor < i && curr != null) {
-            ++cursor;
-            curr = curr.next;
-        }
-        return curr;
-    }
-
-    private SkipList getNodeByValue(SkipList curr, int t) {
+    private SkipList<T> search(SkipList<T> curr, int index, boolean getDataNode) {
         if (curr == null) {
-            System.out.println("curr null");
+//            System.out.println("curr null");
             return null;
         }
-        System.out.println("curr " + curr.element + ", t " + t);
-        if (curr.element == t) {
-            return curr.getDataNode();
+//        System.out.println("curr " + curr.index + ", index " + index);
+        if (curr.index == index) {
+            return getDataNode ? curr.getDataNode() : curr;
         }
-        if (curr.next == null || t < curr.next.element) {
-            return this.getNodeByValue(curr.down, t);
+        if (curr.next == null || index < curr.next.index) {
+            return this.search(curr.down, index, getDataNode);
         }
-        return this.getNodeByValue(curr.next, t);
+        return this.search(curr.next, index, getDataNode);
     }
 
-    private SkipList getDataNode() {
-        if (down == null) {
+    private SkipList<T> getDataNode() {
+        if (null == down) {
             return this;
         }
         return down.getDataNode();
     }
 
     @Override
-    public void add(Integer t) {
-        if (tail == null) {
-            next = new SkipList(t, this, null);
-            tail = next;
+    public void insert(int index, T data) {
+        this.generateIndexAndResetRoot(this.insertByData(index, data));
+        System.out.println("sentinel(" + this.hashCode() + ") add " + data + " size " + size);
+    }
+
+    private SkipList<T> getInsertPrevNode(int index) {
+        this.checkIndex(index);
+        // 从后往前, 找到索引插入位置
+        SkipList<T> prev = tail == null ? this : tail;
+        while (prev.index > index) {
+            prev = prev.prev;
+        }
+        return prev;
+    }
+
+    private SkipList<T> insertNode(SkipList<T> prev, SkipList<T> insert) {
+        if (prev.next != null) {
+            prev.next.prev = insert;
         } else {
-            tail.next = new SkipList(t, tail, null);
-            tail = tail.next;
+            // 插入尾节点
+            tail = insert;
         }
-        ++size;
-        System.out.println("sentinel(" + this.hashCode() + ") add " + tail.element + " size " + size);
-        this.generateIndexAndResetRoot(tail);
+        prev.next = insert;
+        size++;
+        return insert;
+    }
+
+    private SkipList<T> insertByData(int index, T data) {
+        SkipList<T> prev = this.getInsertPrevNode(index);
+        return this.insertNode(prev, new SkipList<>(index, data, prev, prev.next, this));
+    }
+
+    private SkipList<T> insertByIndex(SkipList<T> node) {
+        SkipList<T> prev = this.getInsertPrevNode(node.index);
+        return this.insertNode(prev, new SkipList<>(node, prev, prev.next, this));
     }
 
     @Override
-    public void insert(Integer t, int i) {
-        this.checkIndex(i);
-        ++size;
-        SkipList node = this.getNode(i);
-        SkipList insertNode = new SkipList(t, node.prev, node);
-        node.prev.next = insertNode;
-        node.prev = insertNode;
+    public T get(int index) {
+        this.checkIndex(index);
+        SkipList<T> node = this.search(root, index, true);
+        return null == node ? null : node.data;
     }
 
     @Override
-    public Integer get(int i) {
-        this.checkIndex(i);
-        SkipList node = this.getNode(i);
-        return null == node ? null : node.element;
-    }
-
-    private Integer remove(SkipList removeNode) {
-        if (removeNode == null) {
-            return -1;
+    public T remove(int index) {
+        this.checkIndex(index);
+        SkipList<T> removeNode = this.search(root, index, false);
+        if (null == removeNode) {
+            return null;
         }
-        Integer element = removeNode.element;
-        removeNode.prev.next = removeNode.next;
-        if (removeNode.next != null) {
-            removeNode.next.prev = removeNode.prev;
+        return removeNode.remove();
+    }
+
+    private T remove() {
+        // 移除当前节点
+        prev.next = next;
+        if (null != next) {
+            next.prev = prev;
         }
-        removeNode.clear();
-        if (next == null) {
-            this.clear();
+        --sentinel.size;
+
+        // 获取返回数据, 清理当前节点
+        T data = this.data;
+        if (null != down) {
+            data = down.remove();
         }
-        --size;
-        return element;
+        this.clear();
+        return data;
     }
 
     @Override
-    public Integer remove(int i) {
-        this.checkIndex(i);
-        return this.remove(this.getNode(i));
-    }
-
-    @Override
-    public Integer remove(Integer t) {
-        return this.remove(this.getNodeByValue(root.down, t));
-    }
-
-    @Override
-    public boolean contains(Integer t) {
-        return false;
+    public List<T> range(int begin, int end) {
+        this.checkIndex(begin);
+        this.checkIndex(end);
+        // TODO
+        return null;
     }
 
     @Override
@@ -164,25 +180,20 @@ public class SkipList implements IList<Integer> {
         this.init();
     }
 
-    private SkipList getFirst() {
-        if (prev == null) {
-            return next;
-        }
-        return prev.getFirst();
-    }
-
     /**
-     * @description 生成索引
+     * @description 生成索引, 并重置索引根节点
      * <p> <功能详细描述> </p>
      *
      * @author 陈晨
      * @date 2021/5/7 16:22
      */
-    private void generateIndexAndResetRoot(SkipList node) {
+    private void generateIndexAndResetRoot(SkipList<T> node) {
         // 生成索引
-        this.generateIndex(node);
+        boolean resetRoot = this.generateIndex(node);
         // 重置索引根节点
-        this.resetRoot();
+        if (resetRoot) {
+            this.resetRoot();
+        }
     }
 
     /**
@@ -192,41 +203,25 @@ public class SkipList implements IList<Integer> {
      * @author 陈晨
      * @date 2021/5/7 16:22
      */
-    private void generateIndex(SkipList node) {
-        // 生成哨兵 + 首个索引节点
-        if (index == null) {
-            index = new SkipList();
-            index.size = 1;
-            index.next = new SkipList(node.getFirst(), index, null);
-            index.tail = index.next;
-            System.out.println("sentinel(" + this.hashCode() + ") generate new index(" + index.hashCode() + ") "
-                    + node.getFirst().element + ", size " + index.size);
-            return;
+    private boolean generateIndex(SkipList<T> node) {
+        // 生成上级索引 + 首个索引节点
+        if (null == top) {
+            top = new SkipList<>();
+            top.insertByIndex(node.sentinel.next);
+            System.out.println("sentinel(" + this.hashCode() + ") generate new index(" + top.hashCode() + ") "
+                    + node.sentinel.next.index + ", size " + top.size);
+            return true;
         }
         // size = 1, 3, 5, 7... 时生成索引
         if ((size - 1) % 2 != 0) {
             System.out.println("sentinel(" + this.hashCode() + ") size " + size + " reject generate index");
-            return;
+            return false;
         }
-
-        ++index.size;
-        System.out.println("sentinel(" + this.hashCode() + ") generate index(" + index.hashCode() + ") "
-                + node.element + ", size " + index.size);
-        // 尾部节点, 追加索引
-        if (node.next == null) {
-            index.tail.next = new SkipList(node, index.tail, null);
-            index.tail = index.tail.next;
-            index.generateIndex(index.tail);
-            return;
-        }
-
-        throw new RuntimeException("unrealized 中间插入节点");
-        // 中间插入节点
-//        SkipList lastLENode = index.next;
-//        while (lastLENode != null && lastLENode) {
-//
-//        }
-//        index.generateIndex(lastLENode);
+        // 插入索引
+        SkipList<T> insert = top.insertByIndex(node);
+        System.out.println("sentinel(" + this.hashCode() + ") generate index(" + top.hashCode() + ") "
+                + node.index + ", size " + top.size);
+        return top.generateIndex(insert);
     }
 
     /**
@@ -237,14 +232,14 @@ public class SkipList implements IList<Integer> {
      * @date 2021/5/7 16:22
      */
     private void resetRoot() {
-        if (this.index == null) {
+        if (null == this.top) {
             return;
         }
-        SkipList index = this.index;
-        while (index.index != null) {
-            index = index.index;
+        SkipList<T> top = this.top;
+        while (null != top.top) {
+            top = top.top;
         }
-        root = index.next;
+        root = top.next;
     }
 
     public void print() {
@@ -255,16 +250,18 @@ public class SkipList implements IList<Integer> {
 
         // 索引内容
         StringBuilder index = new StringBuilder();
-        SkipList sentinel = this;
-        while (sentinel.index != null) {
+        SkipList<T> sentinel = this;
+        while (sentinel.top != null) {
             StringBuilder currIndex = new StringBuilder();
-            SkipList curr = sentinel.index.next;
+            SkipList<T> curr = sentinel.top.next;
             while (curr != null) {
-                currIndex.append(",").append(curr.element);
+                currIndex.append(",").append(curr.index);
                 curr = curr.next;
             }
-            index.insert(0, "index : [" + currIndex.substring(1) + "]\n");
-            sentinel = sentinel.index;
+            if (currIndex.length() > 0) {
+                index.insert(0, "index : [" + currIndex.substring(1) + "]\n");
+            }
+            sentinel = sentinel.top;
         }
         if (index.length() <= 0) {
             index = new StringBuilder("index : []\n");
@@ -272,16 +269,16 @@ public class SkipList implements IList<Integer> {
 
         // 链表内容
         StringBuilder linked = new StringBuilder();
-        SkipList curr = this.next;
+        SkipList<T> curr = this.next;
         while (curr != null) {
-            linked.append(",").append(curr.element);
+            linked.append(",(").append(curr.index).append(")").append(curr.data);
             curr = curr.next;
         }
         linked = new StringBuilder("linked: [" + linked.substring(1) + "]\n");
 
         // root down
         StringBuilder root = new StringBuilder();
-        SkipList down = this.root;
+        SkipList<T> down = this.root;
         while (down != null) {
             root.append(",").append(down.hashCode());
             down = down.down;
@@ -297,43 +294,54 @@ public class SkipList implements IList<Integer> {
             return "[]";
         }
         StringBuilder linked = new StringBuilder();
-        SkipList curr = this.next;
-        while (curr != null) {
-            linked.append(",").append(curr.element);
+        SkipList<T> curr = this.next;
+        while (null != curr) {
+            linked.append(",").append(curr.data);
             curr = curr.next;
         }
         return "[" + linked.substring(1) + "]";
     }
 
     public static void main(String[] args) {
-        SkipList skipList = new SkipList();
-        skipList.add(1);
-        skipList.print();
-        skipList.add(2);
-        skipList.print();
-        skipList.add(3);
-        skipList.print();
-        skipList.add(4);
-        skipList.print();
-        skipList.add(5);
-        skipList.print();
-        skipList.add(6);
-        skipList.print();
-        skipList.add(7);
-        skipList.print();
-        skipList.add(8);
-        skipList.print();
-        skipList.add(9);
+        SkipList<String> skipList = new SkipList<>();
+        skipList.insert(1, "aaa");
+        skipList.insert(6, "fff");
+        skipList.insert(5, "eee");
+        skipList.insert(7, "ggg");
+        skipList.insert(8, "hhh");
+        skipList.insert(3, "ccc");
+        skipList.insert(4, "ddd");
+        skipList.insert(2, "bbb");
+        skipList.insert(9, "iii");
         skipList.print();
 
         System.out.println(skipList);
         System.out.println("size: " + skipList.size);
+
+        System.out.println(skipList.get(0));
+        System.out.println(skipList.get(1));
+        System.out.println(skipList.get(5));
+        System.out.println(skipList.get(6));
 
         System.out.println("\n===========================================");
-        System.out.println(skipList.remove(Integer.valueOf(5)));
+        System.out.println(skipList.remove(5));
+        System.out.println(skipList.remove(7));
+        System.out.println(skipList.remove(8));
+        System.out.println(skipList.remove(9));
         skipList.print();
+        System.out.println(skipList.remove(1));
+        System.out.println(skipList.remove(2));
+        System.out.println(skipList.remove(3));
+        System.out.println(skipList.remove(4));
+        skipList.print();
+
+        System.out.println("\n===========================================");
         System.out.println(skipList);
         System.out.println("size: " + skipList.size);
+        System.out.println(skipList.get(0));
+        System.out.println(skipList.get(1));
+        System.out.println(skipList.get(5));
+        System.out.println(skipList.get(6));
     }
 
 }

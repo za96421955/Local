@@ -46,7 +46,7 @@ public class Recursions {
         if (n == 1 || n == 2) {
             return n;
         }
-        int result = steps(n - 1) + steps(n - 2);
+        int result = this.steps(n - 1) + this.steps(n - 2);
         results.put(n + "", result);
         return result;
     }
@@ -63,9 +63,9 @@ public class Recursions {
             System.out.println(a + " ===> " + b);
             return;
         }
-        hanoi(--n, a, c, b);
+        this.hanoi(--n, a, c, b);
         System.out.println(a + " ===> " + b);
-        hanoi(n, c, b, a);
+        this.hanoi(n, c, b, a);
     }
 
     public static void main(String[] args) {
