@@ -2,6 +2,7 @@ package com.chen.local.learn.dataStructureAndAlgorithm.search;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.IIndex;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,11 @@ public class SkipList<T> implements IIndex<T> {
 
     public SkipList() {
         this.init();
+    }
+
+    public SkipList(SkipList<T> down) {
+        this();
+        this.down = down;
     }
 
     private SkipList(int index, T data, SkipList<T> prev, SkipList<T> next, SkipList<T> sentinel) {
@@ -166,8 +172,19 @@ public class SkipList<T> implements IIndex<T> {
     public List<T> range(int begin, int end) {
         this.checkIndex(begin);
         this.checkIndex(end);
-        // TODO
-        return null;
+        if (begin > end) {
+            throw new RuntimeException("begin " + begin + " > end " + end);
+        }
+        List<T> rangeResult = new ArrayList<>();
+        SkipList<T> curr = this.search(root, begin, true);
+        while (curr != null) {
+            rangeResult.add(curr.data);
+            curr = curr.next;
+            if (curr.index > end) {
+                break;
+            }
+        }
+        return rangeResult;
     }
 
     @Override
@@ -206,7 +223,7 @@ public class SkipList<T> implements IIndex<T> {
     private boolean generateIndex(SkipList<T> node) {
         // 生成上级索引 + 首个索引节点
         if (null == top) {
-            top = new SkipList<>();
+            top = new SkipList<>(this);
             top.insertByIndex(node.sentinel.next);
             System.out.println("sentinel(" + this.hashCode() + ") generate new index(" + top.hashCode() + ") "
                     + node.sentinel.next.index + ", size " + top.size);
@@ -239,7 +256,7 @@ public class SkipList<T> implements IIndex<T> {
         while (null != top.top) {
             top = top.top;
         }
-        root = top.next;
+        root = top;
     }
 
     public void print() {
