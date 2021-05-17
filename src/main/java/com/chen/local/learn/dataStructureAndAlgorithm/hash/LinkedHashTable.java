@@ -8,27 +8,27 @@ import java.util.Set;
 
 /**
  * 散列表
- * 散列冲突解决: 双重散列（不解决冲突）
+ * 散列冲突解决: 链表
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
  * @version 1.0
  * @date 2021/5/10
  */
-public class DoubleHashTable<K, V> implements IHash<K, V> {
+public class LinkedHashTable<K, V> implements IHash<K, V> {
     private static final int DEFAULT_LENGTH = 4;
     private int length;
 
     private static final double LOAD_FACTOR = 0.75;
     private static final int EXPAND_MULTIPLE = 2;
 
-    private HashNode<K, V>[] nodes;
+    private LinkedHashNode<K, V>[] nodes;
     private int size;
     private Set<K> keySet;
 
-    private DoubleHashTable() {
+    private LinkedHashTable() {
         this.length = DEFAULT_LENGTH;
-        this.nodes = new HashNode[this.length];
+        this.nodes = new LinkedHashNode[this.length];
         this.keySet = new HashSet<>();
     }
 
@@ -40,26 +40,45 @@ public class DoubleHashTable<K, V> implements IHash<K, V> {
         return doubleHashCode.hashCode() % length;
     }
 
+    private void put(LinkedHashNode<K, V>[] nodes, int location, K k, V v) {
+        if (null == nodes[location]) {
+            nodes[location] = new LinkedHashNode<>();
+        }
+        nodes[location].add(k, v);
+    }
+
     private void expand() {
         length *= EXPAND_MULTIPLE;
-        HashNode<K, V>[] newNodes = new HashNode[this.length];
-        for (HashNode<K, V> node : nodes) {
+        LinkedHashNode<K, V>[] newNodes = new LinkedHashNode[this.length];
+        for (LinkedHashNode<K, V> node : nodes) {
             if (node == null) {
                 continue;
             }
-            newNodes[this.hash(node.getKey())] = node;
+            LinkedHashNode<K, V> curr = node.getNext();
+            while (null != curr) {
+                this.put(newNodes, this.hash(curr.getKey()), curr.getKey(), curr.getValue());
+                curr = curr.getNext();
+            }
         }
         nodes = newNodes;
     }
 
+    private LinkedHashNode<K, V> getNode(K k) {
+        LinkedHashNode<K, V> node = nodes[this.hash(k)];
+        return null != node ? node.get(k) : null;
+    }
+
     @Override
     public void put(K k, V v) {
-        int location = this.hash(k);
-        if (null == nodes[location]) {
-            ++size;
+        LinkedHashNode<K, V> node = this.getNode(k);
+        if (null != node) {
+            node.setValue(v);
+            return;
         }
-        nodes[location] = new HashNode<>(k, v);
+        ++size;
         keySet.add(k);
+        this.put(nodes, this.hash(k), k, v);
+
         if (size >= length * LOAD_FACTOR) {
             this.expand();
         }
@@ -67,27 +86,24 @@ public class DoubleHashTable<K, V> implements IHash<K, V> {
 
     @Override
     public V get(K k) {
-        IHashNode<K, V> hashNode = nodes[this.hash(k)];
-        return null != hashNode ? hashNode.getValue() : null;
+        LinkedHashNode<K, V> node = this.getNode(k);
+        return null != node ? node.getValue() : null;
     }
 
     @Override
     public V remove(K k) {
-        int location = this.hash(k);
-        IHashNode<K, V> hashNode = nodes[location];
-        if (null == hashNode) {
+        LinkedHashNode<K, V> node = this.getNode(k);
+        if (null == node) {
             return null;
         }
         --size;
-        nodes[location] = null;
         keySet.remove(k);
-        return hashNode.getValue();
+        return node.remove(k).getValue();
     }
 
     @Override
     public boolean contains(K k) {
-        IHashNode<K, V> hashNode = nodes[this.hash(k)];
-        return null != hashNode;
+        return null != this.get(k);
     }
 
     @Override
@@ -103,31 +119,39 @@ public class DoubleHashTable<K, V> implements IHash<K, V> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (IHashNode<K, V> node : nodes) {
+        for (LinkedHashNode<K, V> node : nodes) {
             if (null == node) {
                 continue;
             }
-            sb.append(",\"").append(node.getKey()).append("\":").append(node.getValue());
+            LinkedHashNode<K, V> curr = node.getNext();
+            while (null != curr) {
+                sb.append(",\"").append(curr.getKey()).append("\":").append(curr.getValue());
+                curr = curr.getNext();
+            }
         }
         return "{" + sb.substring(1) + "}";
     }
 
     public static void main(String[] args) {
-        IHash<String, Object> hashTable = new DoubleHashTable<>();
+        IHash<String, Object> hashTable = new LinkedHashTable<>();
         hashTable.put("1", "aaa");
         hashTable.put("2", "bbb");
+        System.out.println(hashTable);
         hashTable.put("3", "ccc");
         hashTable.put("4", "ddd");
         System.out.println(hashTable);
         hashTable.remove("3");
         hashTable.remove("1");
         System.out.println(hashTable);
+
+        System.out.println("\n============================");
         hashTable.put("1", "aaa");
         hashTable.put("2", "bbb");
         hashTable.put("3", "ccc");
         hashTable.put("4", "ddd");
-        hashTable.put("5", "ddd");
-        hashTable.put("6", "ddd");
+        System.out.println(hashTable);
+        hashTable.put("5", "eee");
+        hashTable.put("6", "fff");
         System.out.println(hashTable);
         System.out.println(hashTable.keySet());
     }
