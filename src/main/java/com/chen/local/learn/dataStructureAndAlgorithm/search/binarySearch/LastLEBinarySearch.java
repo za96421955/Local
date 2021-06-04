@@ -1,4 +1,4 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.search;
+package com.chen.local.learn.dataStructureAndAlgorithm.search.binarySearch;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.ISearch;
 import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
@@ -8,18 +8,18 @@ import java.util.Arrays;
 
 /**
  * 二分查找
- * 变形: 找到第一个等于目标值的位置
+ * 变形: 找到最后一个小于等于目标值的位置
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
  * @version 1.0
  * @date 2021/5/6
  */
-public class FirstEqualBinarySearch implements ISearch {
+public class LastLEBinarySearch implements ISearch {
 
     private int searchCount;
 
-    public FirstEqualBinarySearch() {
+    public LastLEBinarySearch() {
         this.init();
     }
 
@@ -30,17 +30,10 @@ public class FirstEqualBinarySearch implements ISearch {
     @Override
     public int search(int[] elements, int target) {
         this.init();
-        int index = this.searchFast(elements, target, 0, elements.length - 1);
-        System.out.println("index: " + index + ", searchCount: " + this.getSearchCount());
-
-        System.out.println();
-        this.init();
-        index = this.searchSimple(elements, target, 0, elements.length - 1);
-        System.out.println("index: " + index + ", searchCount: " + this.getSearchCount());
-        return index;
+        return this.search(elements, target, 0, elements.length - 1);
     }
 
-    private int searchFast(int[] elements, int target, int low, int high) {
+    private int search(int[] elements, int target, int low, int high) {
         if (high < low) {
             return -1;
         }
@@ -52,37 +45,14 @@ public class FirstEqualBinarySearch implements ISearch {
                 + ", mid: " + mid
                 + ", midValue: " + elements[mid]);
         if (elements[mid] > target) {
-            return this.searchFast(elements, target, low, mid - 1);
+            return this.search(elements, target, low, mid - 1);
         }
-        if (elements[mid] < target) {
-            return this.searchFast(elements, target, mid + 1, high);
-        }
-        // 已找到等值索引, 判断左边一位是否仍等于目标, 等于则继续查找
-        if (mid <= 0 || elements[mid - 1] != target) {
+        // 已找到小于等于目标索引, 判断右边一位是否仍大于目标, 小于等于则继续查找
+        if (mid >= elements.length - 1 || elements[mid + 1] > target) {
             return mid;
         }
         System.out.println("continue: " + mid);
-        return this.searchFast(elements, target, low, mid - 1);
-    }
-
-    private int searchSimple(int[] elements, int target, int low, int high) {
-        if (high < low) {
-            if (low < elements.length && elements[low] == target) {
-                return low;
-            }
-            return -1;
-        }
-        searchCount++;
-        int mid = (high + low) >> 1;
-        System.out.println("SearchCount: " + searchCount
-                + ", low: " + low
-                + ", high: " + high
-                + ", mid: " + mid
-                + ", midValue: " + elements[mid]);
-        if (elements[mid] >= target) {
-            return this.searchSimple(elements, target, low, mid - 1);
-        }
-        return this.searchSimple(elements, target, mid + 1, high);
+        return this.search(elements, target, mid + 1, high);
     }
 
     @Override
@@ -92,7 +62,7 @@ public class FirstEqualBinarySearch implements ISearch {
 
     public static void main(String[] args) {
         ISort sort = new QSort();
-        ISearch search = new FirstEqualBinarySearch();
+        ISearch search = new LastLEBinarySearch();
 
         int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         System.out.println("Sort Start: ");
@@ -105,16 +75,16 @@ public class FirstEqualBinarySearch implements ISearch {
         System.out.println("index: " + index + ", searchCount: " + search.getSearchCount());
 
         System.out.println("\n===================================");
-        elements = new int[1000];
+        elements = new int[20];
         for (int i = 0; i < elements.length; ++i) {
-            elements[i] = (int) (Math.random() * 10);
+            elements[i] = (int) (Math.random() * 5);
         }
         System.out.println("Sort Start: ");
         sort.sort(elements);
         System.out.println(Arrays.toString(elements));
         System.out.println("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19]");
 
-        target = (int) (Math.random() * 10);
+        target = (int) (Math.random() * 5) + 1;
         System.out.println("\nSearch Start: " + target);
         long begin = System.currentTimeMillis();
         index = search.search(elements, target);

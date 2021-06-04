@@ -1,4 +1,4 @@
-package com.chen.local.learn.dataStructureAndAlgorithm.search;
+package com.chen.local.learn.dataStructureAndAlgorithm.search.binarySearch;
 
 import com.chen.local.learn.dataStructureAndAlgorithm.ISearch;
 import com.chen.local.learn.dataStructureAndAlgorithm.ISort;
@@ -8,18 +8,18 @@ import java.util.Arrays;
 
 /**
  * 二分查找
- * 变形: 找到最后一个等于目标值的位置
+ * 变形: 找到第一个等于目标值的位置
  * <p> <功能详细描述> </p>
  *
  * @author 陈晨
  * @version 1.0
  * @date 2021/5/6
  */
-public class LastEqualBinarySearch implements ISearch {
+public class FirstEqualBinarySearch implements ISearch {
 
     private int searchCount;
 
-    public LastEqualBinarySearch() {
+    public FirstEqualBinarySearch() {
         this.init();
     }
 
@@ -57,18 +57,18 @@ public class LastEqualBinarySearch implements ISearch {
         if (elements[mid] < target) {
             return this.searchFast(elements, target, mid + 1, high);
         }
-        // 已找到等值索引, 判断右边一位是否仍等于目标, 等于则继续查找
-        if (mid >= elements.length - 1 || elements[mid + 1] != target) {
+        // 已找到等值索引, 判断左边一位是否仍等于目标, 等于则继续查找
+        if (mid <= 0 || elements[mid - 1] != target) {
             return mid;
         }
         System.out.println("continue: " + mid);
-        return this.searchFast(elements, target, mid + 1, high);
+        return this.searchFast(elements, target, low, mid - 1);
     }
 
     private int searchSimple(int[] elements, int target, int low, int high) {
         if (high < low) {
-            if (high < elements.length && elements[high] == target) {
-                return high;
+            if (low < elements.length && elements[low] == target) {
+                return low;
             }
             return -1;
         }
@@ -79,10 +79,10 @@ public class LastEqualBinarySearch implements ISearch {
                 + ", high: " + high
                 + ", mid: " + mid
                 + ", midValue: " + elements[mid]);
-        if (elements[mid] <= target) {
-            return this.searchSimple(elements, target, mid + 1, high);
+        if (elements[mid] >= target) {
+            return this.searchSimple(elements, target, low, mid - 1);
         }
-        return this.searchSimple(elements, target, low, mid - 1);
+        return this.searchSimple(elements, target, mid + 1, high);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class LastEqualBinarySearch implements ISearch {
 
     public static void main(String[] args) {
         ISort sort = new QSort();
-        ISearch search = new LastEqualBinarySearch();
+        ISearch search = new FirstEqualBinarySearch();
 
         int[] elements = {6, 5, 4, 3, 2, 1, 10, 9, 8, 7};
         System.out.println("Sort Start: ");
@@ -105,7 +105,7 @@ public class LastEqualBinarySearch implements ISearch {
         System.out.println("index: " + index + ", searchCount: " + search.getSearchCount());
 
         System.out.println("\n===================================");
-        elements = new int[10000];
+        elements = new int[1000];
         for (int i = 0; i < elements.length; ++i) {
             elements[i] = (int) (Math.random() * 10);
         }
