@@ -1,4 +1,4 @@
-package com.chen.local.rocketmq;
+package com.chen.local.net;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -16,19 +16,19 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
  * @version 1.0
  * @date 2021/5/17
  */
-public class Demo {
+public class RocketMQ {
 
-    private static final String NAMESERVER_ADDR = "127.0.0.1:9876";
+    private static final String NAMESERVER_ADDR = "192.168.23.6:9876";
 
-    private static final String GROUP = "local_test_group";
-    private static final String TOPIC = "local_test_topic";
+    private static final String GROUP = "xxx-group";
+    private static final String TOPIC = "Test_Topic";
 
     public void producer() throws Exception {
         DefaultMQProducer producer = new DefaultMQProducer(GROUP);
         producer.setNamesrvAddr(NAMESERVER_ADDR);
         producer.start();
 
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 50; ++i) {
             String content = "Hello RocketMQ! index: " + i;
             Message msg = new Message(TOPIC, "tagA", content.getBytes(RemotingHelper.DEFAULT_CHARSET));
             SendResult result = producer.send(msg);
@@ -37,6 +37,7 @@ public class Demo {
                     , result.getMessageQueue().getBrokerName()
                     , result.getMessageQueue().getQueueId()
                     , result.getQueueOffset());
+            Thread.sleep(1000);
         }
 
         producer.shutdown();
@@ -61,9 +62,9 @@ public class Demo {
     }
 
     public static void main(String[] args) throws Exception {
-        Demo demo = new Demo();
+        RocketMQ rocketMQ = new RocketMQ();
         try {
-            demo.consumer();
+            rocketMQ.consumer();
             System.out.println("=== consumer end ===");
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +73,7 @@ public class Demo {
         Thread.sleep(1000L);
 
         try {
-            demo.producer();
+            rocketMQ.producer();
             System.out.println("=== producer end ===");
         } catch (Exception e) {
             e.printStackTrace();
