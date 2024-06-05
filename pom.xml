@@ -17,7 +17,7 @@
     <description>local test</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <fastjson.version>1.2.46</fastjson.version>
         <aspectjweaver.version>1.9.2</aspectjweaver.version>
         <jedis.version>2.9.1</jedis.version>
@@ -25,6 +25,9 @@
         <easyexcel.version>2.2.6</easyexcel.version>
         <httpclient.version>4.5.7</httpclient.version>
         <springCloud.alibaba.version>2.2.1</springCloud.alibaba.version>
+
+        <coap.version>3.7.0</coap.version>
+<!--        <coap.version>2.0.0-M7</coap.version>-->
     </properties>
 
     <dependencies>
@@ -104,25 +107,22 @@
         <dependency>
             <groupId>org.eclipse.californium</groupId>
             <artifactId>californium-core</artifactId>
-            <version>3.7.0</version>
+            <version>${coap.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.eclipse.californium</groupId>-->
-<!--            <artifactId>californium-core</artifactId>-->
-<!--            <version>2.0.0-M7</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.eclipse.californium</groupId>-->
-<!--            <artifactId>element-connector</artifactId>-->
-<!--            <version>2.0.0-M7</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.eclipse.californium</groupId>-->
-<!--            <artifactId>scandium</artifactId>-->
-<!--            <version>2.0.0-M7</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.eclipse.californium</groupId>
+            <artifactId>element-connector</artifactId>
+            <version>${coap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.californium</groupId>
+            <artifactId>scandium</artifactId>
+            <version>${coap.version}</version>
+        </dependency>
 
-<!--        <dependency>-->
+
+
+        <!--        <dependency>-->
 <!--            <groupId>com.alibaba.cloud</groupId>-->
 <!--            <artifactId>spring-cloud-alibaba-dependencies</artifactId>-->
 <!--            <type>pom</type>-->
@@ -147,6 +147,7 @@
 <!--    </build>-->
 
     <build>
+        <!-- 生成源码包 -->
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -158,6 +159,7 @@
             </resource>
         </resources>
         <plugins>
+            <!-- maven 打包, spring-boot 版本 2.3.3.RELEASE -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -166,6 +168,7 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <!-- 打 jar 包 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -178,16 +181,25 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- jar 指定 main class -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-<!--                <version>3.1.0</version>-->
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.chen.local.net.CoAPClientTest.main</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.chen.local.net.CoAPClientTest</mainClass>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+            <!-- spring-boot jar main class 生效 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
                 </configuration>
             </plugin>
         </plugins>
