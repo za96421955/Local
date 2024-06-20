@@ -28,20 +28,70 @@ public class CoAPClientTest {
      */
     public static void main(String[] args) {
         // CoAP服务器地址
-//        String coapServerUri = "coaps://127.0.0.1:18443/ola/v1/device/auth";
-//        String coapServerUri = "coaps://127.0.0.1:8443/ola/v1/device/auth";
-        String coapServerUri = "coaps://smarthome-mini.189smarthome.com:9004/ola/v1/device/auth";
-//        String coapServerUri = "coap://117.83.178.185:9004/ola/v1/device/auth";
+        String host = "coaps://smarthome-mini.189smarthome.com:9004";
+        String auth_uri = "/ola/v1/device/auth";
+        String services_uri = "/ola/v1/device/services";
 
-//        post(args[0]);
-        postDTLS(coapServerUri);
-//        get();
+        // 请求参数
+//        String payload = "{\"registryCode\":\"Tvn5HtTMjQZnJLxf\",\"Rc\":\"df69\",\"udid\":\"8SUpuksYCQfFu6gd215RSOT0c4kBobQpm1DUmnAx/WU=\",\"mac\":\"4417935e4a36\"}";
+        String payload = "{\n" +
+                "    \"messageId\": \"12345678\",\n" +
+                "    \"errcode\": 0,\n" +
+                "    \"tDevId\": \"3At98OpZMWQ9P9yV\",\n" +
+                "    \"data\": {\n" +
+                "        \"device\": {\n" +
+                "            \"title\": \"smokeSensor\",\n" +
+                "            \"productiid\": \"000021\",\n" +
+                "            \"services\": [\n" +
+                "                {\n" +
+                "                    \"sname\": \"smokeSensor\",\n" +
+                "                    \"suuid\": \"101038\",\n" +
+                "                    \"siid\": \"1\",\n" +
+                "                    \"properties\": [\n" +
+                "                        {\n" +
+                "                            \"pname\": \"protectionStatus\",\n" +
+                "                            \"puuid\": \"201244\",\n" +
+                "                            \"iid\": \"1\",\n" +
+                "                            \"type\": \"bool\",\n" +
+                "                            \"readable\": \"true\",\n" +
+                "                            \"writable\": \"true\"\n" +
+                "                        }\n" +
+                "                    ],\n" +
+                "                    \"actions\": [\n" +
+                "                        {\n" +
+                "                            \"aname\": \"cancelAlarm\",\n" +
+                "                            \"auuid\": \"301009\",\n" +
+                "                            \"iid\": \"1\"\n" +
+                "                        }\n" +
+                "                    ],\n" +
+                "                    \"events\": [\n" +
+                "                        {\n" +
+                "                            \"ename\": \"smokeStatusAlarm\",\n" +
+                "                            \"euuid\": \"401041\",\n" +
+                "                            \"iid\": \"1\",\n" +
+                "                            \"eventType\": \"alert\",\n" +
+                "                            \"outputData\": {\n" +
+                "                                \"Smoke Concentration\": {\n" +
+                "                                    \"type\": \"string\",\n" +
+                "                                    \"index\": \"1\"\n" +
+                "                                }\n" +
+                "                            }\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+
+        // 调用
+        postDTLS(host + services_uri, payload);
+        post(host + services_uri, payload);
     }
 
-    private static void postDTLS(String url) {
-        String payload = "{\"registryCode\":\"Tvn5HtTMjQZnJLxf\",\"Rc\":\"df69\",\"udid\":\"8SUpuksYCQfFu6gd215RSOT0c4kBobQpm1DUmnAx/WU=\",\"mac\":\"4417935e4a36\"}";
+    private static void postDTLS(String url, String payload) {
 //        String identity = "temporary";
-        String identity = "udid.8SUpuksYCQfFu6gd215RSOT0c4kBobQpm1DUmnAx/WU=";
+        String identity = "udid.5j0lI25PViZlNc9BQXvmkuYLk3wzP6otghk9P3TdvHY=";
         String password = "123456";
         try {
             // DTLS 配置
@@ -81,12 +131,10 @@ public class CoAPClientTest {
         }
     }
 
-    private static void post(String coapServerUri) {
+    private static void post(String url, String payload) {
         // 创建CoapClient实例
-        CoapClient client = new CoapClient(coapServerUri);
+        CoapClient client = new CoapClient(url);
         client.setTimeout(10000L);
-        // 设置需要发送的数据
-        String payload = "{\"registryCode\":\"oh3mGSbdiNFYc95J\",\"Rc\":\"df69\",\"udid\":\"8SUpuksYCQfFu6gd215RSOT0c4kBobQpm1DUmnAx/WU=\",\"mac\":\"4417935e4a36\"}";
         try {
             // 发送请求并接收响应
             CoapResponse response = client.post(payload, MediaTypeRegistry.APPLICATION_JSON);
