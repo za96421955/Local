@@ -86,7 +86,7 @@ public class CoAPClientTest {
 
         // 调用
         postDTLS(host + services_uri, payload);
-        post(host + services_uri, payload);
+//        post(host + services_uri, payload);
     }
 
     private static void postDTLS(String url, String payload) {
