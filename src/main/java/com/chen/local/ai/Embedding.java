@@ -2,9 +2,7 @@ package com.chen.local.ai;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.chen.local.net.HTTPClientUtil;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import com.chen.local.net.HttpClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +18,8 @@ import java.util.stream.Collectors;
  * @date 2025/3/3
  */
 public class Embedding {
+
+    private static final String API_KEY = "sk-2b416845775f4f028deecc3ce219b27e";
 
 //    public void load() throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException {
 //        // 示例：加载BERT-base-uncased预训练模型
@@ -58,12 +58,10 @@ public class Embedding {
         JSONObject body = new JSONObject();
         body.put("model", "multimodal-embedding-v1");
         body.put("input", input);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        String result = HTTPClientUtil.post(httpClient, url, body.toJSONString(), httpPost -> {
-            httpPost.setHeader("Content-Type", "application/json");
-            httpPost.setHeader("Authorization", "Bearer sk-2b416845775f4f028deecc3ce219b27e");
-            return null;
-        });
+        String result = HttpClient.post(url)
+                .authorization("Bearer " + API_KEY)
+                .body(body.toJSONString())
+                .asString();
         System.out.println(result);
         JSONObject resultJson = JSONObject.parseObject(result);
         return resultJson.getJSONObject("output")
@@ -89,12 +87,10 @@ public class Embedding {
         // dimensions: 1024/768/512
         body.put("dimensions", 768);
         body.put("encoding_format", "float");
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        String result = HTTPClientUtil.post(httpClient, url, body.toJSONString(), httpPost -> {
-            httpPost.setHeader("Content-Type", "application/json");
-            httpPost.setHeader("Authorization", "Bearer sk-2b416845775f4f028deecc3ce219b27e");
-            return null;
-        });
+        String result = HttpClient.post(url)
+                .authorization("Bearer " + API_KEY)
+                .body(body.toJSONString())
+                .asString();
         System.out.println(result);
         JSONObject resultJson = JSONObject.parseObject(result);
         List<Float> denseVectors = resultJson.getJSONArray("data").getJSONObject(0)

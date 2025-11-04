@@ -1,5 +1,6 @@
 package com.chen.local.ylp;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,8 +21,7 @@ import java.util.stream.Collectors;
 public class SqlOutput {
 
     // 需要处理的SQL语句
-    private static final String SQL = "insert into t_aqara_cloud_model_mapping(iot_model, third_model, create_time) " +
-            " values('%s', '%s', NOW()); \n";
+    private static final String SQL = "INSERT INTO `t_base_small_category` (`id`, `big_category_id`,`code`, `name`,`create_time`, `update_time`) VALUES('%s','%s','%s','%s',NOW(),NOW());\n";
     private static final String[] FILTER = {"gateway-acn01", "motion-aq2"};
 
     public static void main(String[] args) throws Exception {
@@ -32,10 +32,8 @@ public class SqlOutput {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
-            if (Arrays.stream(FILTER).collect(Collectors.toList()).contains(line)) {
-                continue;
-            }
-            System.out.printf(SQL, line, line);
+            JSONObject json = JSONObject.parseObject(line);
+            System.out.printf(SQL, json.get("id"), json.get("bigCategoryId"), json.get("code"), json.get("name"));
         }
         reader.close();
     }
